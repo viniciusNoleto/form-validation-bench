@@ -1,0 +1,218 @@
+[
+  {
+    "n": 3,
+    "task": "Yup validateSyncAt · campo raiz válido",
+    "mean_us": 1.14,
+    "p99_us": 2.07
+  },
+  {
+    "n": 3,
+    "task": "Yup validateSyncAt · campo raiz inválido",
+    "mean_us": 13.74,
+    "p99_us": 26.92
+  },
+  {
+    "n": 3,
+    "task": "Yup validateSyncAt · item de array inválido",
+    "mean_us": 13.69,
+    "p99_us": 25.86
+  },
+  {
+    "n": 3,
+    "task": "Yup validateAt (Promise) · campo raiz inválido",
+    "mean_us": 15.18,
+    "p99_us": 31.57
+  },
+  {
+    "n": 3,
+    "task": "Zod local · campo raiz válido",
+    "mean_us": 0.5,
+    "p99_us": 0.69
+  },
+  {
+    "n": 3,
+    "task": "Zod local · campo raiz inválido",
+    "mean_us": 1.76,
+    "p99_us": 3.07
+  },
+  {
+    "n": 3,
+    "task": "Zod local · item de array inválido",
+    "mean_us": 2.07,
+    "p99_us": 3.37
+  },
+  {
+    "n": 3,
+    "task": "Zod full+filtro · campo raiz inválido",
+    "mean_us": 6.42,
+    "p99_us": 14.55
+  },
+  {
+    "n": 3,
+    "task": "Yup validateSync · formulário inteiro inválido",
+    "mean_us": 122.67,
+    "p99_us": 235.14
+  },
+  {
+    "n": 3,
+    "task": "Yup validateSync · formulário inteiro válido",
+    "mean_us": 22.39,
+    "p99_us": 44.8
+  },
+  {
+    "n": 3,
+    "task": "Zod safeParse · formulário inteiro inválido",
+    "mean_us": 4.23,
+    "p99_us": 9.85
+  },
+  {
+    "n": 3,
+    "task": "Zod safeParse · formulário inteiro válido",
+    "mean_us": 2.05,
+    "p99_us": 5.96
+  },
+  {
+    "n": 30,
+    "task": "Yup validateSyncAt · campo raiz válido",
+    "mean_us": 1.21,
+    "p99_us": 2.64
+  },
+  {
+    "n": 30,
+    "task": "Yup validateSyncAt · campo raiz inválido",
+    "mean_us": 14.34,
+    "p99_us": 28.86
+  },
+  {
+    "n": 30,
+    "task": "Yup validateSyncAt · item de array inválido",
+    "mean_us": 14.52,
+    "p99_us": 27.94
+  },
+  {
+    "n": 30,
+    "task": "Yup validateAt (Promise) · campo raiz inválido",
+    "mean_us": 16.21,
+    "p99_us": 30.34
+  },
+  {
+    "n": 30,
+    "task": "Zod local · campo raiz válido",
+    "mean_us": 0.49,
+    "p99_us": 0.88
+  },
+  {
+    "n": 30,
+    "task": "Zod local · campo raiz inválido",
+    "mean_us": 1.82,
+    "p99_us": 2.66
+  },
+  {
+    "n": 30,
+    "task": "Zod local · item de array inválido",
+    "mean_us": 1.98,
+    "p99_us": 3.28
+  },
+  {
+    "n": 30,
+    "task": "Zod full+filtro · campo raiz inválido",
+    "mean_us": 23.07,
+    "p99_us": 37.8
+  },
+  {
+    "n": 30,
+    "task": "Yup validateSync · formulário inteiro inválido",
+    "mean_us": 493.57,
+    "p99_us": 884.65
+  },
+  {
+    "n": 30,
+    "task": "Yup validateSync · formulário inteiro válido",
+    "mean_us": 105.7,
+    "p99_us": 236.67
+  },
+  {
+    "n": 30,
+    "task": "Zod safeParse · formulário inteiro inválido",
+    "mean_us": 16.89,
+    "p99_us": 30.04
+  },
+  {
+    "n": 30,
+    "task": "Zod safeParse · formulário inteiro válido",
+    "mean_us": 8.11,
+    "p99_us": 18.52
+  },
+  {
+    "n": 300,
+    "task": "Yup validateSyncAt · campo raiz válido",
+    "mean_us": 1.16,
+    "p99_us": 2.11
+  },
+  {
+    "n": 300,
+    "task": "Yup validateSyncAt · campo raiz inválido",
+    "mean_us": 14.01,
+    "p99_us": 27.32
+  },
+  {
+    "n": 300,
+    "task": "Yup validateSyncAt · item de array inválido",
+    "mean_us": 14.43,
+    "p99_us": 27.55
+  },
+  {
+    "n": 300,
+    "task": "Yup validateAt (Promise) · campo raiz inválido",
+    "mean_us": 15.92,
+    "p99_us": 29.59
+  },
+  {
+    "n": 300,
+    "task": "Zod local · campo raiz válido",
+    "mean_us": 0.52,
+    "p99_us": 0.94
+  },
+  {
+    "n": 300,
+    "task": "Zod local · campo raiz inválido",
+    "mean_us": 1.94,
+    "p99_us": 3.08
+  },
+  {
+    "n": 300,
+    "task": "Zod local · item de array inválido",
+    "mean_us": 2.22,
+    "p99_us": 3.46
+  },
+  {
+    "n": 300,
+    "task": "Zod full+filtro · campo raiz inválido",
+    "mean_us": 209.61,
+    "p99_us": 2553.21
+  },
+  {
+    "n": 300,
+    "task": "Yup validateSync · formulário inteiro inválido",
+    "mean_us": 4533.4,
+    "p99_us": 6368.79
+  },
+  {
+    "n": 300,
+    "task": "Yup validateSync · formulário inteiro válido",
+    "mean_us": 1033.65,
+    "p99_us": 1565.51
+  },
+  {
+    "n": 300,
+    "task": "Zod safeParse · formulário inteiro inválido",
+    "mean_us": 152.62,
+    "p99_us": 382.49
+  },
+  {
+    "n": 300,
+    "task": "Zod safeParse · formulário inteiro válido",
+    "mean_us": 66.46,
+    "p99_us": 114.34
+  }
+]

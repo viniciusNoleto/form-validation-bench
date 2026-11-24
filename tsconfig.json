@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "experiments/zod/implementation/**/*.ts",
+    "experiments/zod/implementation/**/*.tsx"
+  ],
+  "exclude": [
+    "src/angular/**",
+    "src/case-study/angular/**",
+    "tests/setup/angular.ts",
+    "tests/**/angular-*",
+    "benchmarks/angular/**"
+  ]
+}

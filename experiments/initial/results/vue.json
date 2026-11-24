@@ -1,0 +1,44 @@
+{
+  "A · debounce 200 · tecla a cada 250ms": {
+    "keystrokes": 25,
+    "intervalMs": 250,
+    "frameRenders": 66,
+    "validations": 26,
+    "flickers": 13
+  },
+  "A · debounce 200 · tecla a cada 60ms": {
+    "keystrokes": 25,
+    "intervalMs": 60,
+    "frameRenders": 27,
+    "validations": 2,
+    "flickers": 0
+  },
+  "A · sem debounce · tecla a cada 60ms": {
+    "keystrokes": 25,
+    "intervalMs": 60,
+    "frameRenders": 66,
+    "validations": 26,
+    "flickers": 13
+  },
+  "B · debounce 200 · tecla a cada 250ms": {
+    "keystrokes": 25,
+    "intervalMs": 250,
+    "frameRenders": 27,
+    "validations": 26,
+    "flickers": 0
+  },
+  "B · debounce 200 · tecla a cada 60ms": {
+    "keystrokes": 25,
+    "intervalMs": 60,
+    "frameRenders": 26,
+    "validations": 2,
+    "flickers": 0
+  },
+  "B · sem debounce · tecla a cada 60ms": {
+    "keystrokes": 25,
+    "intervalMs": 60,
+    "frameRenders": 27,
+    "validations": 26,
+    "flickers": 0
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "W · wrapper por tipo, evento": {
+    "25 teclas · 250ms": {
+      "updates": 25,
+      "validations": 26,
+      "flickers": 0
+    },
+    "25 teclas · 60ms": {
+      "updates": 25,
+      "validations": 26,
+      "flickers": 0
+    },
+    "54 teclas · 250ms": {
+      "updates": 54,
+      "validations": 55,
+      "usPerKey": 191
+    },
+    "54 teclas · 60ms": {
+      "updates": 54,
+      "validations": 55,
+      "usPerKey": 184
+    },
+    "montagem 500 campos ms": 177.4
+  },
+  "F · frame + provide/inject, evento": {
+    "25 teclas · 250ms": {
+      "updates": 50,
+      "validations": 26,
+      "flickers": 0
+    },
+    "25 teclas · 60ms": {
+      "updates": 50,
+      "validations": 26,
+      "flickers": 0
+    },
+    "54 teclas · 250ms": {
+      "updates": 108,
+      "validations": 55,
+      "usPerKey": 235
+    },
+    "54 teclas · 60ms": {
+      "updates": 108,
+      "validations": 55,
+      "usPerKey": 207
+    },
+    "montagem 500 campos ms": 213.7
+  },
+  "FW · frame + provide/inject, watch + debounce": {
+    "25 teclas · 250ms": {
+      "updates": 54,
+      "validations": 26,
+      "flickers": 0
+    },
+    "25 teclas · 60ms": {
+      "updates": 50,
+      "validations": 2,
+      "flickers": 0
+    },
+    "54 teclas · 250ms": {
+      "updates": 118,
+      "validations": 55,
+      "usPerKey": 257
+    },
+    "54 teclas · 60ms": {
+      "updates": 108,
+      "validations": 2,
+      "usPerKey": 154
+    },
+    "montagem 500 campos ms": 214.8
+  },
+  "WC · wrapper por tipo, limpar e regravar": {
+    "25 teclas · 250ms": {
+      "updates": 40,
+      "validations": 26,
+      "flickers": 13
+    },
+    "25 teclas · 60ms": {
+      "updates": 40,
+      "validations": 26,
+      "flickers": 13
+    },
+    "54 teclas · 250ms": {
+      "updates": 87,
+      "validations": 55,
+      "usPerKey": 282
+    },
+    "54 teclas · 60ms": {
+      "updates": 87,
+      "validations": 55,
+      "usPerKey": 267
+    },
+    "montagem 500 campos ms": 181.5
+  },
+  "WD · wrapper por tipo, evento + debounce 200ms": {
+    "25 teclas · 250ms": {
+      "updates": 29,
+      "validations": 26,
+      "flickers": 0
+    },
+    "25 teclas · 60ms": {
+      "updates": 25,
+      "validations": 2,
+      "flickers": 0
+    },
+    "54 teclas · 250ms": {
+      "updates": 64,
+      "validations": 55,
+      "usPerKey": 257
+    },
+    "54 teclas · 60ms": {
+      "updates": 54,
+      "validations": 2,
+      "usPerKey": 135
+    },
+    "montagem 500 campos ms": 182
+  }
+}

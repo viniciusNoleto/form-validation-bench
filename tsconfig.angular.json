@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "useDefineForClassFields": false,
+    "experimentalDecorators": true,
+    "noEmit": false,
+    "types": []
+  },
+  "include": [
+    "src/core/**/*.ts",
+    "src/angular/**/*.ts",
+    "src/case-study/eventSchema.ts",
+    "src/case-study/angular/**/*.ts",
+    "tests/setup/angular.ts",
+    "tests/**/angular-*.ts",
+    "benchmarks/angular/**/*.ts"
+  ],
+  "exclude": [
+    "benchmarks/angular/**/*.test.ts"
+  ],
+  "angularCompilerOptions": {
+    "strictTemplates": true,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  }
+}

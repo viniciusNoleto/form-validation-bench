@@ -1,0 +1,17 @@
+=== Vue (erros como string[] num objeto aninhado) ===
+paths emitidos pelo Yup, na ordem: [ 'descriptions[0].title', 'descriptions' ]
+V1. após submit, errors.descriptions = ["mínimo 2 descrições"]   <- o erro do item 0 foi sobrescrito pelo do array
+V2. após editar o item, errors.descriptions = [{"title":[]}]
+    o frame de "descriptions" renderiza: [ '<objeto {"title":[]}>' ]
+    com filtro typeof === "string": []   <- e a mensagem do array se perdeu
+
+=== React (erros como string num objeto) ===
+R1. após submit (chaves planas): {"descriptions[0].title":"título obrigatório","descriptions":"mínimo 2 descrições"}
+R2. field('descriptions[0].title').error = título obrigatório
+    field('descriptions.0.title').error  = undefined   <- notação com ponto não encontra a chave plana
+R3. onValidate('descriptions.0.title') limpa com _set: {"descriptions[0].title":"título obrigatório","descriptions":[{"title":"<undef>"}]}   <- destruiu a mensagem do array
+R4. erro do contêiner aninhado: truthy = true | typeof string = false -> `{error}` em JSX lançaria "Objects are not valid as a React child"
+
+=== Proposta: mapa plano com chave normalizada ===
+P1. {"descriptions.0.title":"título obrigatório","descriptions":"mínimo 2 descrições"}
+P2. após corrigir o item: {"descriptions":"mínimo 2 descrições"}   <- o erro do array sobrevive, sem colisão

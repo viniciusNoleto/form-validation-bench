@@ -1,0 +1,26 @@
+{
+  "A": {
+    "keystrokes": 25,
+    "formRenders": 50,
+    "fieldRenders": 840,
+    "validations": 26,
+    "flickers": 0,
+    "ms": 69.8
+  },
+  "B": {
+    "keystrokes": 25,
+    "formRenders": 50,
+    "fieldRenders": 540,
+    "validations": 26,
+    "flickers": 0,
+    "ms": 40.4
+  },
+  "C": {
+    "keystrokes": 25,
+    "formRenders": 50,
+    "fieldRenders": 27,
+    "validations": 26,
+    "flickers": 0,
+    "ms": 21.6
+  }
+}
