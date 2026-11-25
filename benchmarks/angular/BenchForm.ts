@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { BenchField, BenchFieldDebounce } from './BenchField';
+import { BenchCore, BenchField, BenchFieldDebounce, BenchFieldEffect, BenchFieldObserved, BenchFrame } from './BenchField';
 import type { BenchForm as BenchFormApi } from './forms';
 import { stats } from './stats';
 
@@ -11,7 +11,7 @@ function renderForm() {
 
 @Component({
   selector: 'bench-form',
-  imports: [BenchField, BenchFieldDebounce],
+  imports: [BenchField, BenchFieldDebounce, BenchFieldObserved, BenchFieldEffect, BenchFrame, BenchCore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     {{ renderForm() }}
@@ -19,6 +19,12 @@ function renderForm() {
       @for (key of keys(); track key) {
         @if (debounce()) {
           <bench-field-debounce [field]="form().field(key)" />
+        } @else if (form().kind === 'observed') {
+          <bench-field-observed [field]="form().field(key)" />
+        } @else if (form().kind === 'effect') {
+          <bench-field-effect [field]="form().field(key)" />
+        } @else if (form().kind === 'frame') {
+          <bench-frame [field]="form().field(key)"><bench-core [label]="key" /></bench-frame>
         } @else {
           <bench-field [field]="form().field(key)" />
         }

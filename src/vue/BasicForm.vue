@@ -123,13 +123,13 @@
 </template>
 
 <script setup lang="ts">
-  import FormText from '../../vue/FormText.vue';
-  import FormTextarea from '../../vue/FormTextarea.vue';
-  import FormNumber from '../../vue/FormNumber.vue';
-  import FormCheckboxGroup from '../../vue/FormCheckboxGroup.vue';
-  import FormList from '../../vue/FormList.vue';
-  import { useValidatedForm } from '../../vue/useValidatedForm';
-  import { descriptionSchema, eventFormOptions, eventSchema } from '../eventSchema';
+  import FormText from './FormText.vue';
+  import FormTextarea from './FormTextarea.vue';
+  import FormNumber from './FormNumber.vue';
+  import FormCheckboxGroup from './FormCheckboxGroup.vue';
+  import FormList from './FormList.vue';
+  import { useValidatedForm } from './useValidatedForm';
+  import { descriptionSchema, basicFormOptions, basicSchema } from '../schemas/basicSchema';
 
   const CATEGORY_OPTIONS = [
     { value: 'music', label: 'Música' },
@@ -140,10 +140,10 @@
 
   const emit = defineEmits<{ submit: [data: unknown] }>();
 
-  const { form, errors, error, validate, validateForm, addItem, removeItem } = useValidatedForm(eventSchema, { ...eventFormOptions, rootSuffix: props.rootSuffix });
+  const { form, errors, error, validate, validateForm, addItem, removeItem } = useValidatedForm(basicSchema, { ...basicFormOptions, rootSuffix: props.rootSuffix });
 
   function submit() {
     if (!validateForm()) return;
-    emit('submit', eventSchema.cast(form.value));
+    emit('submit', basicSchema.cast(form.value));
   }
 </script>

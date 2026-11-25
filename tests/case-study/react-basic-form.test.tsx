@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach, beforeAll } from 'vitest';
 import { render, fireEvent, act, cleanup, screen } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
-import { EventForm } from '../../src/case-study/react/EventForm';
+import { BasicForm } from '../../src/react/BasicForm';
 
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', { writable: true, value: (q: string) => ({ matches: false, media: q, onchange: null, addListener: () => {}, removeListener: () => {}, addEventListener: () => {}, removeEventListener: () => {}, dispatchEvent: () => false }) });
@@ -34,21 +34,21 @@ const click = async (name: string) => { await act(async () => { fireEvent.click(
 describe('formulário complexo React (Yup + wrappers por tipo + Mantine)', () => {
   it('ciclo completo', async () => {
     const onSubmit = vi.fn();
-    render(<MantineProvider><EventForm onSubmit={onSubmit} /></MantineProvider>);
+    render(<MantineProvider><BasicForm onSubmit={onSubmit} /></MantineProvider>);
     expect(alerts()).toEqual({});
 
     await act(async () => { fireEvent.blur(input('Nome')); });
-    expect(alerts().Nome).toBe('Informe o nome do evento');
+    expect(alerts().Nome).toBe('Informe o nome');
 
     await click('Salvar');
     expect(alerts()).toEqual({
-      Nome: 'Informe o nome do evento', 'E-mail': 'Informe o e-mail', Senha: 'Mínimo de 8 caracteres',
+      Nome: 'Informe o nome', 'E-mail': 'Informe o e-mail', Senha: 'Mínimo de 8 caracteres',
       'Confirmação': 'Confirme a senha', Capacidade: 'Informe a capacidade', CEP: 'CEP inválido', Cidade: 'Informe a cidade',
       Categorias: 'Escolha ao menos uma categoria', 'Descrições': 'Adicione ao menos uma descrição',
     });
     expect(onSubmit).not.toHaveBeenCalled();
 
-    await type('Nome', 'Festival');
+    await type('Nome', 'Exemplo');
     expect(alerts().Nome).toBeUndefined();
     await type('Cidade', 'Recife');
 
@@ -57,8 +57,8 @@ describe('formulário complexo React (Yup + wrappers por tipo + Mantine)', () =>
     expect(alerts()['Título 1']).toBeUndefined();
     await click('Adicionar descrição');
     await click('Adicionar descrição');
-    await type('Título 1', 'Line-up'); await type('Conteúdo 1', 'Bandas confirmadas');
-    await type('Título 3', 'Local'); await type('Conteúdo 3', 'Marco Zero, Recife');
+    await type('Título 1', 'Item A'); await type('Conteúdo 1', 'Conteúdo do item A');
+    await type('Título 3', 'Item C'); await type('Conteúdo 3', 'Conteúdo do item C');
     await click('Salvar');
     expect(alerts()['Título 2']).toBe('Informe o título');
     expect(alerts()['Conteúdo 2']).toBe('Mínimo de 10 caracteres');
@@ -67,7 +67,7 @@ describe('formulário complexo React (Yup + wrappers por tipo + Mantine)', () =>
     await click('Remover 2');
     expect(alerts()['Título 2']).toBeUndefined();
     expect(alerts()['Conteúdo 2']).toBeUndefined();
-    expect(input('Título 2').value).toBe('Local');
+    expect(input('Título 2').value).toBe('Item C');
 
     await type('Senha', '12345678');
     await type('Confirmação', '1234567');
@@ -87,11 +87,11 @@ describe('formulário complexo React (Yup + wrappers por tipo + Mantine)', () =>
     await act(async () => { fireEvent.click(screen.getByLabelText('Música')); });
     expect(alerts().Categorias).toBeUndefined();
     await click('Adicionar descrição');
-    await type('Título 1', 'Line-up');
-    await type('Conteúdo 1', 'Bandas confirmadas');
+    await type('Título 1', 'Item A');
+    await type('Conteúdo 1', 'Conteúdo do item A');
     await click('Salvar');
     expect(alerts()).toEqual({});
     expect(onSubmit).toHaveBeenCalledTimes(1);
-    expect(onSubmit.mock.calls[0][0]).toMatchObject({ name: 'Festival', capacity: 100, address: { city: 'Recife' }, categories: ['music'] });
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ name: 'Exemplo', capacity: 100, address: { city: 'Recife' }, categories: ['music'] });
   });
 });

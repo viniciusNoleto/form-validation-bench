@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, type DependencyList } from 'react';
 import { useSchemaForm, type FieldProps } from './useSchemaForm';
-import { descriptionSchema, eventFormOptions, eventSchema } from './eventSchema';
+import { descriptionSchema, basicFormOptions, basicSchema } from './basicSchema';
 import { getDefaults } from './schemaForm';
 
 export const renderLog: string[] = [];
@@ -48,8 +48,8 @@ function ListFrame({ label, value, error, onValidate, children }: FieldProps<unk
   );
 }
 
-export function EventFormReact({ onSubmit }: { onSubmit: (data: unknown) => void }) {
-  const form = useSchemaForm(eventSchema, eventFormOptions);
+export function BasicFormReact({ onSubmit }: { onSubmit: (data: unknown) => void }) {
+  const form = useSchemaForm(basicSchema, basicFormOptions);
   const { state, field, setValue, validate, clearErrorsUnder } = form;
 
   function addDescription() {
@@ -64,7 +64,7 @@ export function EventFormReact({ onSubmit }: { onSubmit: (data: unknown) => void
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
-    onSubmit(eventSchema.parse(state));
+    onSubmit(basicSchema.parse(state));
   }
 
   return (

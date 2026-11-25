@@ -2,9 +2,9 @@ import { it, expect, vi, beforeAll, afterEach } from 'vitest';
 import { createElement } from 'react';
 import { render, fireEvent, act, cleanup, screen } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
-import { EventForm } from '../../src/case-study/react/EventForm';
+import { BasicForm } from '../../src/react/BasicForm';
 
-// Item 3 do roteiro (seção 10.6): "corrigir um campo remove só a sua mensagem; no React, só aquele campo renderiza".
+// Item c do roteiro (seção 10.6): "corrigir um campo remove só a sua mensagem; no React, só aquele campo renderiza".
 // Os inputs do Mantine são envolvidos por um contador de renders por rótulo.
 const renders: Record<string, number> = {};
 vi.mock('@mantine/core', async (importOriginal) => {
@@ -34,7 +34,7 @@ const diff = (before: Record<string, number>) =>
   Object.fromEntries(Object.entries(renders).filter(([k, n]) => n !== (before[k] ?? 0)).map(([k, n]) => [k, n - (before[k] ?? 0)]));
 
 it('digitar num campo renderiza só aquele campo; corrigir o erro renderiza só ele de novo', async () => {
-  render(<MantineProvider><EventForm onSubmit={() => {}} /></MantineProvider>);
+  render(<MantineProvider><BasicForm onSubmit={() => {}} /></MantineProvider>);
   expect(Object.keys(renders)).toEqual(expect.arrayContaining(['Nome', 'E-mail', 'Senha', 'Confirmação', 'Capacidade', 'CEP', 'Cidade']));
 
   // tecla sem mudança de mensagem: um render, só do campo editado
@@ -47,7 +47,7 @@ it('digitar num campo renderiza só aquele campo; corrigir o erro renderiza só 
 
   // corrigir um campo com erro: o campo renderiza com o valor novo e de novo sem a mensagem; nenhum outro
   before = snapshot();
-  await act(async () => { fireEvent.change(input('Nome'), { target: { value: 'Festival' } }); });
+  await act(async () => { fireEvent.change(input('Nome'), { target: { value: 'Exemplo' } }); });
   expect(diff(before)).toEqual({ Nome: 2 });
   expect(input('Nome').getAttribute('aria-invalid')).not.toBe('true');
 });

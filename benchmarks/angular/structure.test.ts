@@ -11,7 +11,7 @@ const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
 function counts(xs: Run[]) {
   for (const k of ['updates', 'formUpdates', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
   const { updates, formUpdates, validations, flickers } = xs[0];
-  return { updates, formUpdates, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)) };
+  return { updates, formUpdates, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
 }
 
 it('Angular: gravação do erro, debounce, montagem e escala', async () => {
@@ -24,12 +24,22 @@ it('Angular: gravação do erro, debounce, montagem e escala', async () => {
     variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
-  // Aquecimento da digitação e da montagem.
-  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+  // Escala: as células com 100 e 500 campos entram no MESMO sorteio das variantes (um bloco só);
+  // a célula com 20 campos é a própria medição da variante (54 teclas, 250 ms).
+  const SCALE = ['H', 'W', 'O'];
+  const cells = SCALE.flatMap((key) => [100, 500].map((n) => ({ key, n })));
 
-  // 54 teclas (seções 8.4 e 8.5) e montagem de 500 campos: REPS repetições, ordem sorteada a cada repetição.
+  // Aquecimento da digitação, da montagem e das células de escala.
+  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n);
+
+  // 54 teclas (seções 8.4 e 8.5), montagem de 500 campos e escala: REPS repetições, ordem sorteada a cada repetição.
+  type Task = { v: (typeof VARIANTS)[number]; n?: number };
+  const tasks: Task[] = [...VARIANTS.map((v) => ({ v })), ...cells.map(({ key, n }) => ({ v: byKey[key], n }))];
   const runs: Record<string, { slow: Run[]; fast: Run[]; mount: number[] }> = {};
-  for (let r = 0; r < REPS; r++) for (const v of shuffled(VARIANTS, RUN * 1000 + r)) {
+  const scaling: Record<string, Run[]> = {};
+  for (let r = 0; r < REPS; r++) for (const { v, n } of shuffled(tasks, RUN * 1000 + r)) {
+    if (n) { (scaling[`${v.key}@${n}`] ??= []).push(await type(v, LONG, 250, n)); continue; }
     const run = (runs[v.key] ??= { slow: [], fast: [], mount: [] });
     run.slow.push(await type(v, LONG, 250));
     run.fast.push(await type(v, LONG, 60));
@@ -39,17 +49,10 @@ it('Angular: gravação do erro, debounce, montagem e escala', async () => {
     const { slow, fast, mount } = runs[v.key];
     Object.assign(variants[v.key], { keys54: { '250ms': counts(slow), '60ms': counts(fast) }, mount500_ms: mount.map(round) });
   }
-
-  // Escala: forma adotada (W) e linha de base (H) com 20, 100 e 500 campos.
-  const cells = ['H', 'W'].flatMap((key) => [20, 100, 500].map((n) => ({ key, n })));
-  const scaling: Record<string, Run[]> = {};
-  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n); // aquecimento
-  for (let r = 0; r < REPS; r++) for (const { key, n } of shuffled(cells, RUN * 2000 + r)) {
-    (scaling[`${key}@${n}`] ??= []).push(await type(byKey[key], LONG, 250, n));
-  }
+  for (const key of SCALE) scaling[`${key}@20`] = runs[key].slow;
 
   const file = writeRun('angular', {
-    method: 'jsdom + TestBed sem zone.js, hlmInput do spartan-ng; updates = atualizações da view dos campos; formUpdates = da view do formulário pai',
+    method: 'jsdom + TestBed sem zone.js, hlmInput do spartan-ng; updates = atualizações da view dos campos; formUpdates = da view do formulário pai; variantes e escala no mesmo sorteio',
     variants,
     scaling: Object.fromEntries(Object.entries(scaling).map(([k, xs]) => [k, { key: k.split('@')[0], n: +k.split('@')[1], ...counts(xs) }])),
   });

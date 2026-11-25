@@ -3,7 +3,7 @@ import type * as yup from 'yup';
 import _get from 'lodash-es/get';
 import _set from 'lodash-es/set';
 import { produce } from 'immer';
-import { type ErrorTree, type FormOptions, errorPath, readError, validateAllSync, validateAtSync } from '../core/formCore';
+import { type ErrorTree, type FormOptions, dependentsOf, errorPath, readError, validateAllSync, validateAtSync } from '../core/formCore';
 
 export type FieldProps<V = any> = {
   value: V;
@@ -43,7 +43,7 @@ export function useValidatedFormState<T extends object>(schema: yup.ObjectSchema
   const validateField = useCallback((path: string) => {
     writeError(path, validateAtSync(schema, path, latestState.current));
 
-    for (const dependent of options.dependents?.[path] ?? []) {
+    for (const dependent of dependentsOf(options.dependents, path)) {
       if (readError(schema, latestErrors.current, dependent, options.rootSuffix)) {
         writeError(dependent, validateAtSync(schema, dependent, latestState.current));
       }

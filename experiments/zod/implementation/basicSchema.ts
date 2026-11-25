@@ -6,8 +6,8 @@ export const descriptionSchema = z.object({
   content: z.string().trim().min(10, 'Mínimo de 10 caracteres').default(''),
 });
 
-export const eventSchema = z.object({
-  name: z.string().trim().min(1, 'Informe o nome do evento').default(''),
+export const basicSchema = z.object({
+  name: z.string().trim().min(1, 'Informe o nome').default(''),
   email: z.string().trim().min(1, 'Informe o e-mail').pipe(z.email('E-mail inválido')).default(''),
   password: z.string().min(8, 'Mínimo de 8 caracteres').default(''),
   password_confirmation: z.string().min(1, 'Confirme a senha').default(''),
@@ -24,9 +24,9 @@ export const eventSchema = z.object({
   path: ['password_confirmation'],
 });
 
-export type EventForm = z.output<typeof eventSchema>;
+export type BasicFormValues = z.output<typeof basicSchema>;
 
-export const eventFormOptions = {
+export const basicFormOptions = {
   crossFields: ['password_confirmation'],
   dependents: { password: ['password_confirmation'] },
 };

@@ -2,7 +2,7 @@ import { expect, vi } from 'vitest';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
 import * as yup from 'yup';
 import { BenchForm } from './BenchForm';
-import { clearThenSetForm, clearThenSetSyncForm, finalForm, noValidationForm, type BenchForm as BenchFormApi } from './forms';
+import { clearThenSetForm, clearThenSetSyncForm, finalForm, noValidationForm, observerForm, withKind, type BenchForm as BenchFormApi } from './forms';
 import { stats } from './stats';
 
 // Mesmo roteiro dos benchmarks React e Vue: e-mail inválido até o último caractere, depois blur.
@@ -21,6 +21,9 @@ export const VARIANTS: Variant[] = [
   V('WC', 'WC · wrapper, assíncrono, limpar e regravar', clearThenSetForm),
   V('WCS', 'WCS · wrapper, síncrono, limpar e regravar', clearThenSetSyncForm),
   V('WD', 'WD · wrapper, evento + debounce 200 ms', finalForm, { debounce: true }),
+  V('F', 'F · frame genérico + injeção de dependência, validação no evento', withKind('frame')),
+  V('WN', 'WN · wrapper que observa o próprio valor (effect), em vez de validar no evento', withKind('effect')),
+  V('O', 'O · observador do formulário (effect sobre o signal); o campo só valida no blur', observerForm),
 ];
 
 const flickers = (t: (string | null)[]) => { let n = 0; for (let i = 2; i < t.length; i++) if (t[i - 2] && t[i - 1] === null && t[i] === t[i - 2]) n++; return n; };
@@ -28,10 +31,12 @@ const flickers = (t: (string | null)[]) => { let n = 0; for (let i = 2; i < t.le
 function create(variant: Variant, n: number) {
   const schema = SCHEMAS[n];
   const keys = Object.keys(schema.fields);
+  const form = variant.form(schema);
   const fixture = TestBed.createComponent(BenchForm);
-  fixture.componentRef.setInput('form', variant.form(schema));
+  fixture.componentRef.setInput('form', form);
   fixture.componentRef.setInput('keys', keys);
   fixture.componentRef.setInput('debounce', variant.debounce);
+  fixture.componentRef.onDestroy(() => form.destroy?.());
   return fixture;
 }
 
@@ -54,10 +59,12 @@ export async function type(variant: Variant, text: string, intervalMs: number, n
   stats.reset();
   const input = root.querySelector<HTMLInputElement>('input[aria-label="f0"]')!;
   let ms = 0;
+  let keyMs = 0; // só o evento de input; o render vem no tick do agendador, dentro do avanço do relógio
   for (let i = 1; i <= text.length; i++) {
     const t0 = performance.now();
     input.value = text.slice(0, i);
     input.dispatchEvent(new Event('input'));
+    keyMs += performance.now() - t0;
     await tick(fixture, intervalMs);
     ms += performance.now() - t0;
     // como no React e no Vue; com debounce, a mensagem só aparece quando a pausa passa dos 200 ms
@@ -72,7 +79,7 @@ export async function type(variant: Variant, text: string, intervalMs: number, n
   input.dispatchEvent(new Event('blur'));
   await tick(fixture, 300);
   expect(root.querySelector('[role=alert]')).toBeNull();
-  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length };
+  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length };
   input.value = '';
   input.dispatchEvent(new Event('input'));
   await tick(fixture, 300);

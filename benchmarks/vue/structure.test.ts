@@ -36,6 +36,10 @@ const VARIANTS: Variant[] = [
   V('WC', 'WC · wrapper, assíncrono, limpar e regravar (forma anterior)'),
   V('WCS', 'WCS · wrapper, síncrono, limpar e regravar'),
   V('WD', 'WD · wrapper, evento + debounce 200 ms', { debounce: true }),
+  V('O', 'O · observador do formulário (watch profundo + cópia anterior); o campo só valida no blur'),
+  V('WV', 'WV · wrapper por tipo declarado num v-for'),
+  V('FV', 'FV · frame num v-for, o slot usa a variável do laço'),
+  V('FVN', 'FVN · frame num v-for, o slot não usa a variável do laço'),
 ];
 const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
 
@@ -50,9 +54,11 @@ async function type(v: Variant, text: string, intervalMs: number, n = 20) {
   await flush(); stats.reset();
   const input = w.find('input[aria-label="f0"]');
   let ms = 0;
+  let keyMs = 0; // só a tecla (setValue, que já espera o nextTick); o resto é o avanço do relógio falso
   for (let i = 1; i <= text.length; i++) {
     const t0 = performance.now();
     await input.setValue(text.slice(0, i));
+    keyMs += performance.now() - t0;
     await vi.advanceTimersByTimeAsync(intervalMs); await flush();
     ms += performance.now() - t0;
     // como no React e no Angular; com debounce, a mensagem só aparece quando a pausa passa dos 200 ms
@@ -64,7 +70,7 @@ async function type(v: Variant, text: string, intervalMs: number, n = 20) {
   ms += performance.now() - t1;
   await input.trigger('blur'); await vi.advanceTimersByTimeAsync(300); await flush();
   expect(w.find('[role=alert]').exists()).toBe(false);
-  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length };
+  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length };
   await input.setValue(''); await vi.advanceTimersByTimeAsync(300); await flush();
   if (v.validates) expect(w.find('[role=alert]').text()).toBe('obrigatório');
   w.unmount(); vi.useRealTimers();
@@ -88,7 +94,7 @@ const round = (x: number) => +x.toFixed(1);
 function counts(xs: Run[]) {
   for (const k of ['updates', 'formUpdates', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
   const { updates, formUpdates, validations, flickers } = xs[0];
-  return { updates, formUpdates, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)) };
+  return { updates, formUpdates, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
 }
 
 it('Vue: estrutura do campo, gravação do erro, debounce, montagem e escala', async () => {
@@ -101,12 +107,22 @@ it('Vue: estrutura do campo, gravação do erro, debounce, montagem e escala', a
     variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
-  // Aquecimento da digitação e da montagem.
-  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+  // Escala: as células com 100 e 500 campos entram no MESMO sorteio das variantes (um bloco só);
+  // a célula com 20 campos é a própria medição da variante (54 teclas, 250 ms).
+  const SCALE = ['H', 'W', 'O'];
+  const cells = SCALE.flatMap((key) => [100, 500].map((n) => ({ key, n })));
 
-  // 54 teclas (seções 8.4 e 8.5) e montagem de 500 campos: REPS repetições, ordem sorteada a cada repetição.
+  // Aquecimento da digitação, da montagem e das células de escala.
+  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n);
+
+  // 54 teclas (seções 8.4 e 8.5), montagem de 500 campos e escala: REPS repetições, ordem sorteada a cada repetição.
+  type Task = { v: Variant; n?: number };
+  const tasks: Task[] = [...VARIANTS.map((v) => ({ v })), ...cells.map(({ key, n }) => ({ v: byKey[key], n }))];
   const runs: Record<string, { slow: Run[]; fast: Run[]; mount: number[] }> = {};
-  for (let r = 0; r < REPS; r++) for (const v of shuffled(VARIANTS, RUN * 1000 + r)) {
+  const scaling: Record<string, Run[]> = {};
+  for (let r = 0; r < REPS; r++) for (const { v, n } of shuffled(tasks, RUN * 1000 + r)) {
+    if (n) { (scaling[`${v.key}@${n}`] ??= []).push(await type(v, LONG, 250, n)); continue; }
     const run = (runs[v.key] ??= { slow: [], fast: [], mount: [] });
     run.slow.push(await type(v, LONG, 250));
     run.fast.push(await type(v, LONG, 60));
@@ -116,17 +132,10 @@ it('Vue: estrutura do campo, gravação do erro, debounce, montagem e escala', a
     const { slow, fast, mount } = runs[v.key];
     Object.assign(variants[v.key], { keys54: { '250ms': counts(slow), '60ms': counts(fast) }, mount500_ms: mount.map(round) });
   }
-
-  // Escala: forma adotada (W) e linha de base (H) com 20, 100 e 500 campos.
-  const cells = ['H', 'W'].flatMap((key) => [20, 100, 500].map((n) => ({ key, n })));
-  const scaling: Record<string, Run[]> = {};
-  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n); // aquecimento
-  for (let r = 0; r < REPS; r++) for (const { key, n } of shuffled(cells, RUN * 2000 + r)) {
-    (scaling[`${key}@${n}`] ??= []).push(await type(byKey[key], LONG, 250, n));
-  }
+  for (const key of SCALE) scaling[`${key}@20`] = runs[key].slow;
 
   const file = writeRun('vue', {
-    method: 'jsdom + @vue/test-utils, InputText do PrimeVue; updates = onBeforeUpdate dos componentes de campo; formUpdates = do formulário pai',
+    method: 'jsdom + @vue/test-utils, InputText do PrimeVue; updates = onBeforeUpdate dos componentes de campo; formUpdates = do formulário pai; variantes e escala no mesmo sorteio',
     variants,
     scaling: Object.fromEntries(Object.entries(scaling).map(([k, xs]) => [k, { key: k.split('@')[0], n: +k.split('@')[1], ...counts(xs) }])),
   });

@@ -162,12 +162,12 @@
   import InputFrame from './InputFrame.vue';
   import TextCore from './TextCore.vue';
   import { useSchemaFormVue } from './useSchemaFormVue';
-  import { descriptionSchema, eventFormOptions, eventSchema } from './eventSchema';
+  import { descriptionSchema, basicFormOptions, basicSchema } from './basicSchema';
   import { getDefaults } from './schemaForm';
 
   const emit = defineEmits<{ submit: [data: unknown] }>();
 
-  const { form, errors, rules, validate, clearErrorsUnder } = useSchemaFormVue(eventSchema, eventFormOptions);
+  const { form, errors, rules, validate, clearErrorsUnder } = useSchemaFormVue(basicSchema, basicFormOptions);
 
   function toggleCategory(category: string) {
     form.value.categories = form.value.categories.includes(category)
@@ -186,6 +186,6 @@
 
   function submit() {
     if (!validate()) return;
-    emit('submit', eventSchema.parse(form.value));
+    emit('submit', basicSchema.parse(form.value));
   }
 </script>

@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "run": 1,
+    "date": "2026-11-25T04:54:14.500Z",
+    "node": "v24.21.0",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "platform": "linux 6.18.58.1-microsoft-standard-WSL2",
+    "order": null
+  },
+  "method": "Chromium chromium via Playwright, headless; 25 teclas a cada 250 ms no campo f0; domFlickers = MutationObserver; paintedFlickers = amostra por requestAnimationFrame",
+  "results": [
+    {
+      "rep": 1,
+      "variant": "W",
+      "frames": 382,
+      "domFlickers": 1,
+      "paintedFlickers": 1,
+      "domChanges": 4,
+      "frameChanges": 4
+    },
+    {
+      "rep": 1,
+      "variant": "WC",
+      "frames": 383,
+      "domFlickers": 14,
+      "paintedFlickers": 1,
+      "domChanges": 30,
+      "frameChanges": 4
+    },
+    {
+      "rep": 2,
+      "variant": "W",
+      "frames": 382,
+      "domFlickers": 1,
+      "paintedFlickers": 1,
+      "domChanges": 4,
+      "frameChanges": 4
+    },
+    {
+      "rep": 2,
+      "variant": "WC",
+      "frames": 382,
+      "domFlickers": 14,
+      "paintedFlickers": 1,
+      "domChanges": 30,
+      "frameChanges": 4
+    },
+    {
+      "rep": 3,
+      "variant": "W",
+      "frames": 382,
+      "domFlickers": 1,
+      "paintedFlickers": 1,
+      "domChanges": 4,
+      "frameChanges": 4
+    },
+    {
+      "rep": 3,
+      "variant": "WC",
+      "frames": 382,
+      "domFlickers": 14,
+      "paintedFlickers": 1,
+      "domChanges": 30,
+      "frameChanges": 4
+    },
+    {
+      "rep": 4,
+      "variant": "W",
+      "frames": 382,
+      "domFlickers": 1,
+      "paintedFlickers": 1,
+      "domChanges": 4,
+      "frameChanges": 4
+    },
+    {
+      "rep": 4,
+      "variant": "WC",
+      "frames": 383,
+      "domFlickers": 14,
+      "paintedFlickers": 1,
+      "domChanges": 30,
+      "frameChanges": 4
+    },
+    {
+      "rep": 5,
+      "variant": "W",
+      "frames": 382,
+      "domFlickers": 1,
+      "paintedFlickers": 1,
+      "domChanges": 4,
+      "frameChanges": 4
+    },
+    {
+      "rep": 5,
+      "variant": "WC",
+      "frames": 381,
+      "domFlickers": 14,
+      "paintedFlickers": 1,
+      "domChanges": 30,
+      "frameChanges": 4
+    }
+  ]
+}

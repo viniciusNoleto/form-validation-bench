@@ -1,10 +1,11 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type * as yup from 'yup';
 import _get from 'lodash-es/get';
 import _set from 'lodash-es/set';
 import { produce } from 'immer';
 import { type ErrorTree, errorPath, readError, validateAtSync } from '../../src/core/formCore';
 import type { FieldProps } from '../../src/react/useValidatedFormState';
+import { changedPaths } from '../shared/changedPaths';
 
 /**
  * O hook de src/react/useValidatedFormState reduzido ao que o benchmark usa, com o modo de
@@ -15,9 +16,12 @@ import type { FieldProps } from '../../src/react/useValidatedFormState';
  * - 'clear-async' : limpar já e regravar quando a Promise do validateAt rejeitar
  * - 'once-eager'  : como 'once', mas compara com a árvore mais recente ANTES de chamar setErrors;
  *                   sem mudança, nem agenda render (o pai não renderiza de novo)
+ * - 'observer'    : o campo não pede a validação na digitação; um useEffect sobre o estado do
+ *                   formulário calcula os caminhos que mudaram e valida cada um (gravação como
+ *                   'once-eager'); o campo continua validando no blur
  * - 'none'        : nunca valida (linha de base do harness: só o custo de digitar e renderizar)
  */
-export type WriteMode = 'once' | 'once-eager' | 'clear-sync' | 'clear-async' | 'none';
+export type WriteMode = 'once' | 'once-eager' | 'clear-sync' | 'clear-async' | 'observer' | 'none';
 
 export function useFormVariant<T extends object>(schema: yup.ObjectSchema<T>, mode: WriteMode, onValidateCall?: () => void) {
   const [state, setState] = useState<T>(() => schema.getDefault() as T);
@@ -49,7 +53,7 @@ export function useFormVariant<T extends object>(schema: yup.ObjectSchema<T>, mo
   const validateField = useCallback((path: string) => {
     if (mode === 'none') return;
     onValidateCall?.();
-    if (mode === 'once-eager') {
+    if (mode === 'once-eager' || mode === 'observer') {
       writeEager(path, validateAtSync(schema, path, latestState.current));
     } else if (mode === 'once') {
       write(path, validateAtSync(schema, path, latestState.current), true);
@@ -63,6 +67,15 @@ export function useFormVariant<T extends object>(schema: yup.ObjectSchema<T>, mo
       });
     }
   }, [schema, mode, write, writeEager, onValidateCall]);
+
+  // Variante O: observador do formulário. Roda depois do commit de cada mudança de estado.
+  const observed = useRef(state);
+  useEffect(() => {
+    if (mode !== 'observer') return;
+    const changed = changedPaths(observed.current, state);
+    observed.current = state;
+    for (const path of changed) validateField(path);
+  }, [mode, state, validateField]);
 
   const handlers = useRef(new Map<string, Pick<FieldProps, 'onChange' | 'onValidate'>>());
   const field = (path: string): FieldProps => {

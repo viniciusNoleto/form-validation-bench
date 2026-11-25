@@ -12,6 +12,7 @@ export function meta() {
     node: process.version,
     cpu: os.cpus()[0]?.model ?? 'desconhecida',
     platform: `${os.platform()} ${os.release()}`,
+    order: process.env.BENCH_ORDER ?? null, // ordem dos blocos na sessão (scripts/bench-runs.mjs)
   };
 }
 

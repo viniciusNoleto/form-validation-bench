@@ -9,11 +9,15 @@
   "include": [
     "src/core/**/*.ts",
     "src/angular/**/*.ts",
-    "src/case-study/eventSchema.ts",
-    "src/case-study/angular/**/*.ts",
+    "src/schemas/basicSchema.ts",
     "tests/setup/angular.ts",
     "tests/**/angular-*.ts",
-    "benchmarks/angular/**/*.ts"
+    "benchmarks/angular/**/*.ts",
+    "experiments/zod/implementation/*Angular.ts",
+    "experiments/zod/implementation/schemaForm.ts",
+    "experiments/zod/implementation/basicSchema.ts",
+    "experiments/zod/implementation/angular.test.ts",
+    "experiments/initial/angular/frame.ts"
   ],
   "exclude": [
     "benchmarks/angular/**/*.test.ts"

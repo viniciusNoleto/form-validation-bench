@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue';
 import angular from '@analogjs/vite-plugin-angular';
 
 // Dois projetos: React/Vue (esbuild + plugin Vue) e Angular (compilador do Angular via Analog).
-const ANGULAR = ['tests/**/angular-*.test.ts', 'benchmarks/angular/**/*.test.ts'];
+const ANGULAR = ['tests/**/angular-*.test.ts', 'benchmarks/angular/**/*.test.ts', 'experiments/zod/implementation/angular.test.ts', 'experiments/initial/angular/**/*.test.ts'];
 
 export default defineConfig({
   test: {

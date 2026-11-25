@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Alert, Code, Container, Grid, List, Paper, SegmentedControl, Stack, Text, Title } from '@mantine/core';
-import { EventForm } from '../../src/case-study/react/EventForm';
+import { BasicForm } from '../../src/react/BasicForm';
 import { STEPS, highlight } from '../guide';
 
 export function App() {
@@ -27,7 +27,7 @@ export function App() {
 
         <Grid gutter="xl">
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <EventForm
+            <BasicForm
               key={mode}
               rootSuffix={mode === 'root'}
               onSubmit={setSubmitted}

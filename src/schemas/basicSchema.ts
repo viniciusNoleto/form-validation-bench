@@ -6,8 +6,8 @@ export const descriptionSchema = yup.object({
   content: yup.string().trim().min(10, 'Mínimo de 10 caracteres').default(''),
 });
 
-export const eventSchema = yup.object({
-  name: yup.string().trim().required('Informe o nome do evento').default(''),
+export const basicSchema = yup.object({
+  name: yup.string().trim().required('Informe o nome').default(''),
   email: yup.string().trim().required('Informe o e-mail').email('E-mail inválido').default(''),
   password: yup.string().min(8, 'Mínimo de 8 caracteres').default(''),
   password_confirmation: yup.string()
@@ -32,8 +32,8 @@ export const eventSchema = yup.object({
     .default([]),
 });
 
-export type EventForm = yup.InferType<typeof eventSchema>;
+export type BasicFormValues = yup.InferType<typeof basicSchema>;
 
-export const eventFormOptions = {
+export const basicFormOptions = {
   dependents: { password: ['password_confirmation'] },
 };

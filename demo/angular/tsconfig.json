@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.angular.json",
+  "compilerOptions": { "noEmit": false },
+  "include": ["./**/*.ts", "../guide.ts", "../../src/core/**/*.ts", "../../src/angular/**/*.ts", "../../src/schemas/basicSchema.ts"]
+}

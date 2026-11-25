@@ -1,13 +1,19 @@
-import { computed, signal } from '@angular/core';
+import { computed, effect, Injector, signal, untracked } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import type * as yup from 'yup';
 import _get from 'lodash-es/get';
 import _set from 'lodash-es/set';
 import { produce } from 'immer';
 import { validatedForm, type FieldRef } from '../../src/angular/validatedForm';
 import { readError, validateAtSync } from '../../src/core/formCore';
+import { changedPaths } from '../shared/changedPaths';
 import { stats } from './stats';
 
-export type BenchForm = { field: (path: string) => FieldRef };
+/** kind: estrutura do campo no BenchForm (padrão: o wrapper BenchField, que valida no evento). */
+export type BenchForm = { field: (path: string) => FieldRef; kind?: 'observed' | 'frame' | 'effect'; destroy?: () => void };
+
+/** A forma adotada com outra estrutura de campo: frame (F) ou wrapper que observa o próprio valor (WN). */
+export const withKind = (kind: BenchForm['kind']) => (schema: yup.ObjectSchema<any>): BenchForm => ({ ...finalForm(schema), kind });
 
 /** Final: o validatedForm de src/angular (validateSyncAt + gravação única), contando validações. */
 export function finalForm(schema: yup.ObjectSchema<any>): BenchForm {
@@ -20,6 +26,38 @@ export function finalForm(schema: yup.ObjectSchema<any>): BenchForm {
         const inner = form.field(path);
         ref = { ...inner, validate: () => { stats.validations++; inner.validate(); } };
         counted.set(path, ref);
+      }
+      return ref;
+    },
+  };
+}
+
+/**
+ * Variante O: observador do formulário. O campo não pede a validação na digitação (o componente
+ * BenchFieldObserved só grava o valor); um effect sobre o signal do formulário calcula os caminhos que
+ * mudaram e valida cada um. O campo continua validando no blur.
+ */
+export function observerForm(schema: yup.ObjectSchema<any>): BenchForm {
+  const form = validatedForm(schema);
+  let previous = untracked(form.form);
+  const observer = effect(() => {
+    const next = form.form();
+    untracked(() => {
+      const changed = changedPaths(previous, next);
+      previous = next;
+      for (const path of changed) { stats.validations++; form.validate(path); }
+    });
+  }, { injector: TestBed.inject(Injector) });
+  const refs = new Map<string, FieldRef>();
+  return {
+    kind: 'observed',
+    destroy: () => observer.destroy(), // o effect vive no injetor raiz: destruído junto com o formulário
+    field(path) {
+      let ref = refs.get(path);
+      if (!ref) {
+        const inner = form.field(path);
+        ref = { ...inner, validate: () => { stats.validations++; inner.validate(); } };
+        refs.set(path, ref);
       }
       return ref;
     },

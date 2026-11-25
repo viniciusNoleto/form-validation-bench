@@ -21,6 +21,29 @@ it('mapa plano: remover o item 1 faz o antigo item 2 herdar o erro', () => {
   expect(flat['items[1].name']).toBe('nome obrigatório'); // agora aponta para "Caio", que é válido
 });
 
+// MET-7: com um item inválido DEPOIS do removido, a árvore se distingue do mapa plano sem renumeração
+// (mesmo que este apague as chaves do item removido): o erro do antigo item 3 precisa ir para o índice 2.
+const form4 = { items: [{ name: 'Ana' }, { name: '' }, { name: 'Caio' }, { name: '' }] };
+
+it('mapa plano sem renumeração, apagando as chaves do removido: o erro do item seguinte fica órfão', () => {
+  const flat: Record<string, string> = {};
+  try { schema.validateSync(form4, { abortEarly: false }); } catch (e: any) { e.inner.forEach((i: any) => { flat[i.path] = i.errors[0]; }); }
+  delete flat['items[1].name'];
+  const after = form4.items.filter((_, i) => i !== 1); // [Ana, Caio, '']
+  const shown = after.map((_, i) => flat[`items[${i}].name`]);
+  expect(shown).toEqual([undefined, undefined, undefined]); // o item vazio (agora índice 2) perdeu o erro
+  expect(flat['items[3].name']).toBe('nome obrigatório'); // órfão: não há mais item 3
+});
+
+it('árvore: splice paralelo mantém a paridade com item inválido depois do removido', () => {
+  let errors = validateAllSync(schema, form4)!;
+  const formAfter = produce(form4, d => { d.items.splice(1, 1); });
+  errors = produce(errors, d => { _get(d, 'items')?.splice(1, 1); });
+  const shown = formAfter.items.map((_, i) => readError(schema, errors, `items[${i}].name`));
+  expect(shown).toEqual([undefined, undefined, 'nome obrigatório']);
+  expect(_get(errors, 'items')).toHaveLength(3);
+});
+
 it('árvore: splice paralelo mantém a paridade', () => {
   let errors = validateAllSync(schema, form)!;
   const formAfter = produce(form, d => { d.items.splice(1, 1); });

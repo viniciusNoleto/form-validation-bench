@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, fireEvent, act, cleanup, screen } from '@testing-library/react';
-import { EventFormReact, renderLog } from './EventFormReact';
+import { BasicFormReact, renderLog } from './BasicFormReact';
 afterEach(() => cleanup());
 
 const alerts = () => Object.fromEntries(screen.queryAllByRole('alert').map((a) => [a.getAttribute('data-field'), a.textContent]));
@@ -10,18 +10,18 @@ const click = async (name: string) => { await act(async () => { fireEvent.click(
 describe('formulário complexo React', () => {
   it('ciclo completo', async () => {
     const onSubmit = vi.fn();
-    render(<EventFormReact onSubmit={onSubmit} />);
+    render(<BasicFormReact onSubmit={onSubmit} />);
     expect(alerts()).toEqual({});
 
     await click('Salvar');
     expect(alerts()).toEqual({
-      Nome: 'Informe o nome do evento', 'E-mail': 'Informe o e-mail', Senha: 'Mínimo de 8 caracteres',
+      Nome: 'Informe o nome', 'E-mail': 'Informe o e-mail', Senha: 'Mínimo de 8 caracteres',
       'Confirmação': 'Confirme a senha', Capacidade: 'Informe a capacidade', CEP: 'CEP inválido', Cidade: 'Informe a cidade',
       Categorias: 'Escolha ao menos uma categoria', 'Descrições': 'Adicione ao menos uma descrição',
     });
     expect(onSubmit).not.toHaveBeenCalled();
 
-    await type('Nome', 'Festival');
+    await type('Nome', 'Exemplo');
     expect(alerts().Nome).toBeUndefined();
 
     // só o campo editado renderiza
@@ -37,7 +37,7 @@ describe('formulário complexo React', () => {
     expect(alerts()['Título 1']).toBe('Informe o título');
     expect(alerts()['Conteúdo 1']).toBe('Mínimo de 10 caracteres');
 
-    await type('Título 1', 'Line-up');
+    await type('Título 1', 'Item A');
     expect(alerts()['Título 1']).toBeUndefined();
 
     await type('Senha', '12345678');
@@ -60,11 +60,11 @@ describe('formulário complexo React', () => {
     await act(async () => { fireEvent.click(screen.getByLabelText('music')); });
     expect(alerts().Categorias).toBeUndefined();
     await click('Adicionar descrição');
-    await type('Título 1', 'Line-up');
-    await type('Conteúdo 1', 'Bandas confirmadas');
+    await type('Título 1', 'Item A');
+    await type('Conteúdo 1', 'Conteúdo do item A');
     await click('Salvar');
     expect(alerts()).toEqual({});
     expect(onSubmit).toHaveBeenCalledTimes(1);
-    expect(onSubmit.mock.calls[0][0]).toMatchObject({ name: 'Festival', capacity: 100, address: { city: 'Recife' }, categories: ['music'] });
+    expect(onSubmit.mock.calls[0][0]).toMatchObject({ name: 'Exemplo', capacity: 100, address: { city: 'Recife' }, categories: ['music'] });
   });
 });

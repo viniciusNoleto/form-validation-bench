@@ -2,7 +2,7 @@ import { it, expect, afterEach, vi } from 'vitest';
 import { render, fireEvent, act, cleanup } from '@testing-library/react';
 import * as yup from 'yup';
 // A = cópia do hook anterior de produção (assíncrono, limpar e regravar); TextField = campo com useNotFirstEffect + onBlur
-import { stats, useValidatedFormStateA, TextField, MemoTextField, MemoDebouncedTextField } from './baseline-hooks.jsx';
+import { stats, useValidatedFormStateA, TextField, MemoTextField, MemoDebouncedTextField, MemoBlurTextField, MemoFrameField } from './baseline-hooks.jsx';
 import { useFormVariant, type WriteMode } from './variantHooks';
 import { useValidatedFormState } from '../../src/react/useValidatedFormState';
 import { RUN, shuffled, writeRun } from '../shared/runs.mjs';
@@ -46,10 +46,13 @@ const VARIANTS: Variant[] = [
   V('A', 'A · forma anterior de produção: assíncrono, limpar e regravar, sem memo', makeForm(useValidatedFormStateA, TextField)),
   V('A2', 'A2 · hook atual, assíncrono, limpar e regravar, sem memo', makeForm(useMode('clear-async'), TextField)),
   V('A3', 'A3 · hook atual, síncrono, limpar e regravar, sem memo', makeForm(useMode('clear-sync'), TextField)),
-  V('B', 'B · gravação única, sem memo', makeForm(useB, TextField)),
+  V('B0', 'B0 · gravação única dentro do updater do setErrors, sem memo', makeForm(useMode('once'), TextField)),
+  V('B', 'B · gravação única antecipada, sem memo', makeForm(useB, TextField)),
   V('C0', 'C0 · gravação única dentro do updater do setErrors (versão anterior) + memo', makeForm(useMode('once'), MemoTextField)),
   V('C', 'C · gravação única antecipada, sem setErrors quando nada muda, + memo (forma adotada)', makeForm(useB, MemoTextField)),
   V('D', 'D · gravação única + memo + debounce 200 ms', makeForm(useB, MemoDebouncedTextField), { debounce: true }),
+  V('F', 'F · frame genérico + contexto, gravação antecipada + memo', makeForm(useB, MemoFrameField)),
+  V('O', 'O · observador do formulário (useEffect sobre o estado) + gravação antecipada + memo; o campo só valida no blur', makeForm(useMode('observer'), MemoBlurTextField)),
 ];
 const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
 
@@ -68,9 +71,11 @@ async function type(variant: Variant, text: string, intervalMs: number, n = 20) 
   const input = getByLabelText('f0');
   const alert = () => container.querySelector('[role=alert]');
   let ms = 0;
+  let keyMs = 0; // só a tecla (change + act); o resto da janela é o avanço do relógio falso
   for (let i = 1; i <= text.length; i++) {
     const t0 = performance.now();
     await act(async () => { fireEvent.change(input, { target: { value: text.slice(0, i) } }); });
+    keyMs += performance.now() - t0;
     await advance(intervalMs);
     ms += performance.now() - t0;
     // com debounce, a mensagem só aparece quando a pausa passa dos 200 ms
@@ -85,7 +90,7 @@ async function type(variant: Variant, text: string, intervalMs: number, n = 20) 
   expect(alert()).toBeNull();
   const out = {
     renders: stats.renders, formRenders: stats.formRenders, validations: stats.validations,
-    flickers: flickers(stats.errorTrail), usPerKey: (ms * 1000) / text.length,
+    flickers: flickers(stats.errorTrail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length,
   };
   await act(async () => { fireEvent.change(input, { target: { value: '' } }); });
   await advance(300);
@@ -111,7 +116,7 @@ const round = (x: number) => +x.toFixed(1);
 function counts(xs: Run[]) {
   for (const k of ['renders', 'formRenders', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
   const { renders, formRenders, validations, flickers } = xs[0];
-  return { renders, formRenders, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)) };
+  return { renders, formRenders, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
 }
 
 it('React: gravação do erro, memo, debounce, montagem e escala', async () => {
@@ -124,12 +129,22 @@ it('React: gravação do erro, memo, debounce, montagem e escala', async () => {
     variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
-  // Aquecimento da digitação e da montagem.
-  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+  // Escala: as células com 100 e 500 campos entram no MESMO sorteio das variantes (um bloco só);
+  // a célula com 20 campos é a própria medição da variante (54 teclas, 250 ms).
+  const SCALE = ['H', 'C', 'C0', 'B', 'O'];
+  const cells = SCALE.flatMap((key) => [100, 500].map((n) => ({ key, n })));
 
-  // 54 teclas (seções 8.4 e 8.5) e montagem de 500 campos: REPS repetições, ordem sorteada a cada repetição.
+  // Aquecimento da digitação, da montagem e das células de escala.
+  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n);
+
+  // 54 teclas (seções 8.4 e 8.5), montagem de 500 campos e escala: REPS repetições, ordem sorteada a cada repetição.
+  type Task = { v: Variant; n?: number };
+  const tasks: Task[] = [...VARIANTS.map((v) => ({ v })), ...cells.map(({ key, n }) => ({ v: byKey[key], n }))];
   const runs: Record<string, { slow: Run[]; fast: Run[]; mount: number[] }> = {};
-  for (let r = 0; r < REPS; r++) for (const v of shuffled(VARIANTS, RUN * 1000 + r)) {
+  const scaling: Record<string, Run[]> = {};
+  for (let r = 0; r < REPS; r++) for (const { v, n } of shuffled(tasks, RUN * 1000 + r)) {
+    if (n) { (scaling[`${v.key}@${n}`] ??= []).push(await type(v, LONG, 250, n)); continue; }
     const run = (runs[v.key] ??= { slow: [], fast: [], mount: [] });
     run.slow.push(await type(v, LONG, 250));
     run.fast.push(await type(v, LONG, 60));
@@ -139,17 +154,10 @@ it('React: gravação do erro, memo, debounce, montagem e escala', async () => {
     const { slow, fast, mount } = runs[v.key];
     Object.assign(variants[v.key], { keys54: { '250ms': counts(slow), '60ms': counts(fast) }, mount500_ms: mount.map(round) });
   }
-
-  // Escala (seção 8.4): o tempo por tecla da forma adotada (C) e da linha de base (H) com 20, 100 e 500 campos.
-  const cells = ['H', 'C', 'C0', 'B'].flatMap((key) => [20, 100, 500].map((n) => ({ key, n })));
-  const scaling: Record<string, Run[]> = {};
-  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n); // aquecimento
-  for (let r = 0; r < REPS; r++) for (const { key, n } of shuffled(cells, RUN * 2000 + r)) {
-    (scaling[`${key}@${n}`] ??= []).push(await type(byKey[key], LONG, 250, n));
-  }
+  for (const key of SCALE) scaling[`${key}@20`] = runs[key].slow;
 
   const file = writeRun('react', {
-    method: 'jsdom + @testing-library/react, inputs HTML; renders = renders do componente de campo; formRenders = renders do formulário pai',
+    method: 'jsdom + @testing-library/react, inputs HTML; renders = renders do componente de campo; formRenders = renders do formulário pai; variantes e escala no mesmo sorteio',
     variants,
     scaling: Object.fromEntries(Object.entries(scaling).map(([k, xs]) => [k, { key: k.split('@')[0], n: +k.split('@')[1], ...counts(xs) }])),
   });

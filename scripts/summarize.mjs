@@ -29,7 +29,7 @@ function sameAcross(label, values) {
 }
 
 const summary = { generatedAt: new Date().toISOString(), runs: {}, frameworks: {}, schema: null, types: null };
-const md = ['# Resumo dos benchmarks', '', `Gerado por \`npm run bench:summary\` a partir de \`results/runs/\`. Tempos: mediana das medianas de cada execução [mín–máx entre execuções].`, ''];
+const md = ['# Resumo dos benchmarks', '', `Gerado por \`npm run bench:summary\` a partir de \`results/runs/\`. Cada execução é uma sessão independente (processo próprio, ordem dos blocos alternada). Tempos: mediana das medianas de cada execução [mín–máx entre execuções]. "Só a tecla" exclui o avanço do relógio falso.`, ''];
 
 for (const fw of ['react', 'vue', 'angular']) {
   const runs = load(fw);
@@ -45,21 +45,23 @@ for (const fw of ['react', 'vue', 'angular']) {
       counts25: { '250ms': sameAcross(`${fw}/${key}/25/250`, vs.map((v) => pick(v.counts25['250ms']))), '60ms': sameAcross(`${fw}/${key}/25/60`, vs.map((v) => pick(v.counts25['60ms']))) },
       counts54: { '250ms': sameAcross(`${fw}/${key}/54/250`, vs.map((v) => pick(v.keys54['250ms']))), '60ms': sameAcross(`${fw}/${key}/54/60`, vs.map((v) => pick(v.keys54['60ms']))) },
       usPerKey: { '250ms': timeStat(vs.map((v) => v.keys54['250ms'].samples_us)), '60ms': timeStat(vs.map((v) => v.keys54['60ms'].samples_us)) },
+      // só a fase da tecla (evento + render síncrono), sem o avanço do relógio falso
+      keyUsPerKey: { '250ms': timeStat(vs.map((v) => v.keys54['250ms'].samples_key_us)), '60ms': timeStat(vs.map((v) => v.keys54['60ms'].samples_key_us)) },
       mount500ms: timeStat(vs.map((v) => v.mount500_ms)),
     };
   }
   for (const cell of Object.keys(runs[0].scaling)) {
     const cs = runs.map((r) => r.scaling[cell]);
     const c = cs[0];
-    out.scaling[cell] = { key: c.key, n: c.n, ...sameAcross(`${fw}/${cell}`, cs.map((x) => ({ [countKey]: x[countKey], formUpdates: x.formUpdates ?? x.formRenders }))), usPerKey: timeStat(cs.map((x) => x.samples_us)) };
+    out.scaling[cell] = { key: c.key, n: c.n, ...sameAcross(`${fw}/${cell}`, cs.map((x) => ({ [countKey]: x[countKey], formUpdates: x.formUpdates ?? x.formRenders }))), usPerKey: timeStat(cs.map((x) => x.samples_us)), keyUsPerKey: timeStat(cs.map((x) => x.samples_key_us)) };
   }
   summary.frameworks[fw] = out;
 
   const fmt = (s) => `${s.median} [${s.min}–${s.max}]`;
-  md.push(`## ${fw}`, '', `| Variante | ${countKey} (25 teclas, 250/60 ms) | pai (25 teclas, 250 ms) | cintilações | ${countKey} (54 teclas, 250/60 ms) | validações (54, 250/60) | µs/tecla, 250 ms | µs/tecla, 60 ms | montagem 500 campos, ms |`, '|---|---|---|---|---|---|---|---|---|');
+  md.push(`## ${fw}`, '', `| Variante | ${countKey} (25 teclas, 250/60 ms) | pai (25 teclas, 250 ms) | cintilações | ${countKey} (54 teclas, 250/60 ms) | validações (54, 250/60) | µs/tecla, 250 ms | µs/tecla, 60 ms | só a tecla, 250/60 ms | montagem 500 campos, ms |`, '|---|---|---|---|---|---|---|---|---|---|');
   for (const [key, v] of Object.entries(out.variants)) {
     const c25 = v.counts25, c54 = v.counts54;
-    md.push(`| ${v.name} | ${c25['250ms'][countKey]} / ${c25['60ms'][countKey]} | ${c25['250ms'].formUpdates} | ${c25['250ms'].flickers} | ${c54['250ms'][countKey]} / ${c54['60ms'][countKey]} | ${c54['250ms'].validations} / ${c54['60ms'].validations} | ${fmt(v.usPerKey['250ms'])} | ${fmt(v.usPerKey['60ms'])} | ${fmt(v.mount500ms)} |`);
+    md.push(`| ${v.name} | ${c25['250ms'][countKey]} / ${c25['60ms'][countKey]} | ${c25['250ms'].formUpdates} | ${c25['250ms'].flickers} | ${c54['250ms'][countKey]} / ${c54['60ms'][countKey]} | ${c54['250ms'].validations} / ${c54['60ms'].validations} | ${fmt(v.usPerKey['250ms'])} | ${fmt(v.usPerKey['60ms'])} | ${v.keyUsPerKey['250ms'].median} / ${v.keyUsPerKey['60ms'].median} | ${fmt(v.mount500ms)} |`);
   }
   md.push('', `Escala (54 teclas a cada 250 ms):`, '', `| Variante | campos | ${countKey} | pai | µs/tecla |`, '|---|---|---|---|---|');
   for (const s of Object.values(out.scaling).sort((a, b) => a.key.localeCompare(b.key) || a.n - b.n)) md.push(`| ${s.key} | ${s.n} | ${s[countKey]} | ${s.formUpdates} | ${fmt(s.usPerKey)} |`);

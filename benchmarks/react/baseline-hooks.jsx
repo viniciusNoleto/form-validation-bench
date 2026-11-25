@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from 'react';
 import _debounce from 'lodash-es/debounce';
 import _get from 'lodash-es/get';
 import _set from 'lodash-es/set';
@@ -109,6 +109,41 @@ export const MemoDebouncedTextField = memo(function DebouncedTextField({ value, 
   return (
     <label>
       <input aria-label={name} value={value ?? ''} onChange={e => onChange?.(e.currentTarget.value)} onBlur={() => { validateLater.cancel(); onValidate?.(); }} />
+      {error ? <span role="alert">{error}</span> : null}
+    </label>
+  );
+});
+
+// Campo da variante O: não pede a validação ao mudar o valor (quem valida é o observador do
+// formulário); valida só no blur.
+export const MemoBlurTextField = memo(function BlurTextField({ value, onChange, onValidate, error, name }) {
+  stats.renders++;
+  if (name === 'f0') stats.errorTrail.push(error ?? null);
+  return (
+    <label>
+      <input aria-label={name} value={value ?? ''} onChange={e => onChange?.(e.currentTarget.value)} onBlur={onValidate} />
+      {error ? <span role="alert">{error}</span> : null}
+    </label>
+  );
+});
+
+// Variante F: frame genérico. O frame recebe o contrato do campo, observa o valor e repassa valor e
+// gatilho ao núcleo por contexto (o provide/inject do React); o núcleo renderiza o input. Dois
+// componentes por campo, como o frame do Vue (BenchFrame + BenchCore) e do Angular.
+const FrameContext = createContext(null);
+const MemoFrameCore = memo(function FrameCore({ name }) {
+  stats.renders++;
+  const ctx = useContext(FrameContext);
+  return <input aria-label={name} value={ctx.value ?? ''} onChange={e => ctx.onChange?.(e.currentTarget.value)} onBlur={ctx.onValidate} />;
+});
+export const MemoFrameField = memo(function FrameField({ value, onChange, onValidate, error, name }) {
+  stats.renders++;
+  if (name === 'f0') stats.errorTrail.push(error ?? null);
+  useNotFirstEffect(() => { onValidate?.(); }, [value]);
+  const ctx = useMemo(() => ({ value, onChange, onValidate }), [value, onChange, onValidate]);
+  return (
+    <label>
+      <FrameContext.Provider value={ctx}><MemoFrameCore name={name} /></FrameContext.Provider>
       {error ? <span role="alert">{error}</span> : null}
     </label>
   );

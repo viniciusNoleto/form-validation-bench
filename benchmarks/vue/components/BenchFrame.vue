@@ -26,6 +26,7 @@
     set: (value) => { model.value = value; if (!props.useWatch) validate(); },
   }));
   provide('validate', validate);
+  provide('name', props.name); // para o núcleo sem prop de rótulo (variante FVN)
 
   const message = computed(() => (typeof props.error === 'string' ? props.error : undefined));
 

@@ -1,0 +1,13 @@
+/* Os helm do spartan-ng esperam Tailwind, que o projeto não configura: estilo mínimo para a demo, como na demo Vue. */
+body { margin: 0; }
+form { display: flex; flex-direction: column; gap: 14px; }
+[hlmField] { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+input, textarea { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+input[aria-invalid='true'], textarea[aria-invalid='true'] { border-color: #dc2626; }
+hlm-field-error { color: #dc2626; font-size: 13px; }
+fieldset { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+fieldset > div { display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; border-bottom: 1px dashed #e5e7eb; }
+button { align-self: flex-start; padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; }
+button[type='submit'] { background: #10b981; color: #fff; border-color: #10b981; }
+[role='checkbox'] { width: 16px; height: 16px; padding: 0; border: 1px solid #94a3b8; border-radius: 4px; }
+[role='checkbox'][aria-checked='true'] { background: #10b981; border-color: #10b981; }

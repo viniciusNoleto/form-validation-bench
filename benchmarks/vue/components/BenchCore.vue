@@ -1,7 +1,7 @@
 <template>
   <InputText
     v-model="modelValue"
-    :aria-label="label"
+    :aria-label="label ?? name"
     @blur="validate"
   />
 </template>
@@ -11,7 +11,8 @@
   import InputText from 'primevue/inputtext';
   import { stats } from '../stats';
 
-  defineProps<{ label: string }>();
+  defineProps<{ label?: string }>();
+  const name = inject('name') as string;
   const modelValue = inject('modelValue') as Ref<any>;
   const validate = inject('validate') as () => void;
 

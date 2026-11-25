@@ -2,7 +2,7 @@ import { ref, type Ref } from 'vue';
 import type * as yup from 'yup';
 import _get from 'lodash-es/get';
 import _set from 'lodash-es/set';
-import { type ErrorTree, type FormOptions, errorPath, readError, validateAllSync, validateAtSync } from '../core/formCore';
+import { type ErrorTree, type FormOptions, dependentsOf, errorPath, readError, validateAllSync, validateAtSync } from '../core/formCore';
 
 export function useValidatedForm<T extends object>(schema: yup.ObjectSchema<T>, options: FormOptions = {}) {
   const form = ref(schema.getDefault()) as Ref<T>;
@@ -18,7 +18,7 @@ export function useValidatedForm<T extends object>(schema: yup.ObjectSchema<T>, 
   function validate(path: string) {
     writeError(path, validateAtSync(schema, path, form.value));
 
-    for (const dependent of options.dependents?.[path] ?? []) {
+    for (const dependent of dependentsOf(options.dependents, path)) {
       if (readError(schema, errors.value, dependent, options.rootSuffix)) writeError(dependent, validateAtSync(schema, dependent, form.value));
     }
   }

@@ -6,7 +6,12 @@ import _set from 'lodash-es/set';
 export type ErrorTree = Record<string, any>;
 
 export type FormOptions = {
-  /** quando a chave muda, revalidar também estes caminhos (se já exibem erro) */
+  /**
+   * Quando a chave muda, revalidar também estes caminhos (se já exibem erro). A chave pode ser um
+   * caminho exato (`contact.email`) ou uma forma de caminho com `[]` no lugar dos índices
+   * (`contact.phones[].type`); nesse caso cada `[]` do dependente recebe, em ordem, os índices do
+   * caminho validado (`contact.phones[2].type` -> `contact.phones[2].number`).
+   */
   dependents?: Record<string, string[]>;
   /** false = árvore ingênua: o erro do contêiner divide o nó com os erros dos filhos (só para demonstração) */
   rootSuffix?: boolean;
@@ -19,6 +24,20 @@ const containerCache = new WeakMap<yup.Schema, Map<string, boolean>>();
 
 /** `descriptions[3].title` -> `descriptions[].title`: a forma do caminho sem os índices. */
 const shapeOf = (path: string) => path.replace(/\[\d+\]/g, '[]').replace(/\.\d+(?=\.|$)/g, '[]');
+
+/** Dependentes de um caminho: os da chave exata e os da forma do caminho, com os índices preenchidos. */
+export function dependentsOf(dependents: Record<string, string[]> | undefined, path: string): string[] {
+  if (!dependents) return [];
+  const exact = dependents[path] ?? [];
+  const shape = shapeOf(path);
+  const byShape = shape === path ? undefined : dependents[shape];
+  if (!byShape) return exact;
+  const indices = [...path.matchAll(/\[(\d+)\]|\.(\d+)(?=\.|$)/g)].map((m) => m[1] ?? m[2]);
+  return [...exact, ...byShape.map((dependent) => {
+    let i = 0;
+    return dependent.replace(/\[\]/g, () => `[${indices[i++]}]`);
+  })];
+}
 
 /** O caminho aponta para um array/objeto no esquema? (memoizado por forma de caminho) */
 export function isContainer(schema: yup.Schema, path: string): boolean {

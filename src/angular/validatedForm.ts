@@ -3,7 +3,7 @@ import type * as yup from 'yup';
 import _get from 'lodash-es/get';
 import _set from 'lodash-es/set';
 import { produce } from 'immer';
-import { type ErrorTree, type FormOptions, errorPath, readError, validateAllSync, validateAtSync } from '../core/formCore';
+import { type ErrorTree, type FormOptions, dependentsOf, errorPath, readError, validateAllSync, validateAtSync } from '../core/formCore';
 
 /**
  * O que um wrapper de campo recebe: o mesmo contrato do `field(p)` do React e das props do Vue
@@ -40,7 +40,7 @@ export function validatedForm<T extends object>(schema: yup.ObjectSchema<T>, opt
     untracked(() => {
       writeError(path, validateAtSync(schema, path, form()));
 
-      for (const dependent of options.dependents?.[path] ?? []) {
+      for (const dependent of dependentsOf(options.dependents, path)) {
         if (readError(schema, errors(), dependent, options.rootSuffix)) writeError(dependent, validateAtSync(schema, dependent, form()));
       }
     });

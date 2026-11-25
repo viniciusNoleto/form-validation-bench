@@ -24,7 +24,7 @@
 
     <div class="grid">
       <section class="form-col">
-        <EventForm
+        <BasicForm
           :key="mode"
           :root-suffix="mode === 'root'"
           @submit="submitted = $event"
@@ -48,7 +48,7 @@
               <pre>{{ JSON.stringify(form, null, 2) }}</pre>
             </Teleport>
           </template>
-        </EventForm>
+        </BasicForm>
 
         <Message
           v-if="submitted"
@@ -70,7 +70,7 @@
   import { ref } from 'vue';
   import SelectButton from 'primevue/selectbutton';
   import Message from 'primevue/message';
-  import EventForm from '../../src/case-study/vue/EventForm.vue';
+  import BasicForm from '../../src/vue/BasicForm.vue';
   import { STEPS, highlight } from '../guide';
 
   const MODES = [
