@@ -1,17 +1,18 @@
 import { it, expect, afterEach, vi } from 'vitest';
 import { render, fireEvent, act, cleanup } from '@testing-library/react';
 import * as yup from 'yup';
-import fs from 'node:fs';
-// A = cópia fiel do hook anterior (limpar e regravar); TextField = campo com useNotFirstEffect + onBlur
+// A = cópia do hook anterior de produção (assíncrono, limpar e regravar); TextField = campo com useNotFirstEffect + onBlur
 import { stats, useValidatedFormStateA, TextField, MemoTextField, MemoDebouncedTextField } from './baseline-hooks.jsx';
+import { useFormVariant, type WriteMode } from './variantHooks';
 import { useValidatedFormState } from '../../src/react/useValidatedFormState';
+import { RUN, shuffled, writeRun } from '../shared/runs.mjs';
 afterEach(() => cleanup());
 
 // Mesmo roteiro dos benchmarks Vue e Angular: e-mail inválido até o último caractere, depois blur.
 const make = (n: number) => yup.object(Object.fromEntries(Array.from({ length: n }, (_, i) => [`f${i}`, i === 0
   ? yup.string().required('obrigatório').email('e-mail inválido').default('')
   : yup.string().required('obrigatório').default('')])));
-const s20 = make(20), s500 = make(500);
+const SCHEMAS: Record<number, yup.ObjectSchema<any>> = { 20: make(20), 100: make(100), 500: make(500) };
 const TEXT = 'fulano.de.tal@exemplo.com'; // 25 teclas (contagens)
 const LONG = 'fulano.de.tal.da.silva.sauro@exemplo-de-dominio.com.br'; // 54 teclas (tempo por tecla)
 
@@ -22,33 +23,47 @@ function countValidate(fn: () => void) {
   if (!w) { w = () => { stats.validations++; fn(); }; wrapped.set(fn, w); }
   return w as () => void;
 }
+/** O hook de src/react, contando validações. */
 function useB(s: any) {
   const form = useValidatedFormState(s);
   return { ...form, field: (p: string) => { const f = form.field(p); return { ...f, onValidate: countValidate(f.onValidate) }; } };
 }
+const countCall = () => { stats.validations++; };
+const useMode = (mode: WriteMode) => (s: any) => useFormVariant(s, mode, countCall);
 
 function makeForm(useHook: any, Field: any) {
   return function Form({ schema }: { schema: yup.ObjectSchema<any> }) {
+    stats.formRenders++;
     const { field } = useHook(schema);
     return <form>{Object.keys(schema.fields).map((k) => <Field key={k} name={k} {...field(k)} />)}</form>;
   };
 }
 
-type Variant = { name: string; Form: any; debounce: boolean };
+type Variant = { key: string; name: string; Form: any; debounce: boolean; validates: boolean };
+const V = (key: string, name: string, Form: any, opts: Partial<Variant> = {}): Variant => ({ key, name, Form, debounce: false, validates: true, ...opts });
 const VARIANTS: Variant[] = [
-  { name: 'A · limpar e regravar, sem memo', Form: makeForm(useValidatedFormStateA, TextField), debounce: false },
-  { name: 'B · gravação única, sem memo', Form: makeForm(useB, TextField), debounce: false },
-  { name: 'C · gravação única + memo', Form: makeForm(useB, MemoTextField), debounce: false },
-  { name: 'D · gravação única + memo + debounce 200ms', Form: makeForm(useB, MemoDebouncedTextField), debounce: true },
+  V('H', 'H · input sem validação (linha de base do harness), memo', makeForm(useMode('none'), MemoTextField), { validates: false }),
+  V('A', 'A · forma anterior de produção: assíncrono, limpar e regravar, sem memo', makeForm(useValidatedFormStateA, TextField)),
+  V('A2', 'A2 · hook atual, assíncrono, limpar e regravar, sem memo', makeForm(useMode('clear-async'), TextField)),
+  V('A3', 'A3 · hook atual, síncrono, limpar e regravar, sem memo', makeForm(useMode('clear-sync'), TextField)),
+  V('B', 'B · gravação única, sem memo', makeForm(useB, TextField)),
+  V('C0', 'C0 · gravação única dentro do updater do setErrors (versão anterior) + memo', makeForm(useMode('once'), MemoTextField)),
+  V('C', 'C · gravação única antecipada, sem setErrors quando nada muda, + memo (forma adotada)', makeForm(useB, MemoTextField)),
+  V('D', 'D · gravação única + memo + debounce 200 ms', makeForm(useB, MemoDebouncedTextField), { debounce: true }),
 ];
+const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
 
 const flickers = (t: any[]) => { let n = 0; for (let i = 2; i < t.length; i++) if (t[i - 2] && t[i - 1] === null && t[i] === t[i - 2]) n++; return n; };
-const median = (xs: number[]) => [...xs].sort((a, b) => a - b).at(Math.floor(xs.length / 2))!;
 const advance = (ms: number) => act(async () => { await vi.advanceTimersByTimeAsync(ms); });
 
-async function type(variant: Variant, text: string, intervalMs: number) {
+/**
+ * Digita `text` no campo f0 de um formulário de `n` campos, uma tecla a cada `intervalMs`, e sai do campo.
+ * Janela medida: cada tecla (change + act) e o avanço do relógio até a próxima, mais os 300 ms finais
+ * em que um debounce pendente dispara; ficam fora as asserções e o blur.
+ */
+async function type(variant: Variant, text: string, intervalMs: number, n = 20) {
   vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'] });
-  const { getByLabelText, container } = render(<variant.Form schema={s20} />);
+  const { getByLabelText, container } = render(<variant.Form schema={SCHEMAS[n]} />);
   stats.reset();
   const input = getByLabelText('f0');
   const alert = () => container.querySelector('[role=alert]');
@@ -59,65 +74,84 @@ async function type(variant: Variant, text: string, intervalMs: number) {
     await advance(intervalMs);
     ms += performance.now() - t0;
     // com debounce, a mensagem só aparece quando a pausa passa dos 200 ms
-    if (i === 5 && (!variant.debounce || intervalMs > 200)) expect(alert()?.textContent).toBe('e-mail inválido');
+    if (i === 5 && variant.validates && (!variant.debounce || intervalMs > 200)) expect(alert()?.textContent).toBe('e-mail inválido');
+    if (!variant.validates) expect(alert()).toBeNull();
   }
+  const t1 = performance.now();
   await advance(300);
+  ms += performance.now() - t1;
   await act(async () => { fireEvent.blur(input); });
   await advance(300);
   expect(alert()).toBeNull();
-  const out = { keys: text.length, renders: stats.renders, validations: stats.validations, flickers: flickers(stats.errorTrail), usPerKey: (ms * 1000) / text.length };
+  const out = {
+    renders: stats.renders, formRenders: stats.formRenders, validations: stats.validations,
+    flickers: flickers(stats.errorTrail), usPerKey: (ms * 1000) / text.length,
+  };
   await act(async () => { fireEvent.change(input, { target: { value: '' } }); });
   await advance(300);
-  expect(alert()?.textContent).toBe('obrigatório');
+  if (variant.validates) expect(alert()?.textContent).toBe('obrigatório');
   cleanup();
   vi.useRealTimers();
   return out;
 }
-
 type Run = Awaited<ReturnType<typeof type>>;
 
 async function mountMs(variant: Variant) {
   const t0 = performance.now();
-  const { container } = render(<variant.Form schema={s500} />);
+  const { container } = render(<variant.Form schema={SCHEMAS[500]} />);
   const ms = performance.now() - t0;
   expect(container.querySelectorAll('input')).toHaveLength(500);
   cleanup();
   return ms;
 }
 
-const REPS = 15;
+const REPS = Number(process.env.BENCH_REPS ?? 15);
+const round = (x: number) => +x.toFixed(1);
+/** Contagens das 15 repetições precisam ser idênticas: o roteiro é determinístico. */
+function counts(xs: Run[]) {
+  for (const k of ['renders', 'formRenders', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
+  const { renders, formRenders, validations, flickers } = xs[0];
+  return { renders, formRenders, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)) };
+}
 
-it('React: gravação do erro, memo, debounce e montagem', async () => {
-  const out: Record<string, any> = {};
+it('React: gravação do erro, memo, debounce, montagem e escala', async () => {
+  const variants: Record<string, any> = {};
 
-  // Contagens com 25 teclas (seção 8.3): exatas, uma execução basta.
-  for (const variant of VARIANTS) {
-    const [slow, fast] = [await type(variant, TEXT, 250), await type(variant, TEXT, 60)];
-    out[variant.name] = {
-      '25 teclas · 250ms': { renders: slow.renders, validations: slow.validations, flickers: slow.flickers },
-      '25 teclas · 60ms': { renders: fast.renders, validations: fast.validations, flickers: fast.flickers },
-    };
+  // Contagens com 25 teclas (seção 8.3).
+  for (const v of VARIANTS) {
+    const [slow, fast] = [await type(v, TEXT, 250), await type(v, TEXT, 60)];
+    const c = ({ renders, formRenders, validations, flickers }: Run) => ({ renders, formRenders, validations, flickers });
+    variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
-  // 54 teclas (seções 8.4 e 8.5) e montagem de 500 campos: intercalado, REPS repetições, mediana dos tempos.
-  for (const variant of VARIANTS) await mountMs(variant); // aquecimento
+  // Aquecimento da digitação e da montagem.
+  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+
+  // 54 teclas (seções 8.4 e 8.5) e montagem de 500 campos: REPS repetições, ordem sorteada a cada repetição.
   const runs: Record<string, { slow: Run[]; fast: Run[]; mount: number[] }> = {};
-  for (let r = 0; r < REPS; r++) for (const variant of VARIANTS) {
-    const run = (runs[variant.name] ??= { slow: [], fast: [], mount: [] });
-    run.slow.push(await type(variant, LONG, 250));
-    run.fast.push(await type(variant, LONG, 60));
-    run.mount.push(await mountMs(variant));
+  for (let r = 0; r < REPS; r++) for (const v of shuffled(VARIANTS, RUN * 1000 + r)) {
+    const run = (runs[v.key] ??= { slow: [], fast: [], mount: [] });
+    run.slow.push(await type(v, LONG, 250));
+    run.fast.push(await type(v, LONG, 60));
+    run.mount.push(await mountMs(v));
   }
-  const summary = (xs: Run[]) => ({ renders: xs[0].renders, validations: xs[0].validations, usPerKey: Math.round(median(xs.map((x) => x.usPerKey))) });
-  for (const variant of VARIANTS) {
-    const { slow, fast, mount } = runs[variant.name];
-    Object.assign(out[variant.name], {
-      '54 teclas · 250ms': summary(slow),
-      '54 teclas · 60ms': summary(fast),
-      'montagem 500 campos ms': +median(mount).toFixed(1),
-    });
+  for (const v of VARIANTS) {
+    const { slow, fast, mount } = runs[v.key];
+    Object.assign(variants[v.key], { keys54: { '250ms': counts(slow), '60ms': counts(fast) }, mount500_ms: mount.map(round) });
   }
 
-  fs.writeFileSync('results/react-structure.json', JSON.stringify(out, null, 2));
-  console.log(JSON.stringify(out, null, 1));
-}, 600000);
+  // Escala (seção 8.4): o tempo por tecla da forma adotada (C) e da linha de base (H) com 20, 100 e 500 campos.
+  const cells = ['H', 'C', 'C0', 'B'].flatMap((key) => [20, 100, 500].map((n) => ({ key, n })));
+  const scaling: Record<string, Run[]> = {};
+  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n); // aquecimento
+  for (let r = 0; r < REPS; r++) for (const { key, n } of shuffled(cells, RUN * 2000 + r)) {
+    (scaling[`${key}@${n}`] ??= []).push(await type(byKey[key], LONG, 250, n));
+  }
+
+  const file = writeRun('react', {
+    method: 'jsdom + @testing-library/react, inputs HTML; renders = renders do componente de campo; formRenders = renders do formulário pai',
+    variants,
+    scaling: Object.fromEntries(Object.entries(scaling).map(([k, xs]) => [k, { key: k.split('@')[0], n: +k.split('@')[1], ...counts(xs) }])),
+  });
+  console.log('gravado em', file);
+}, 3_600_000);

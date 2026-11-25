@@ -37,3 +37,19 @@ it('árvore ingênua (sem :root): o erro do array apaga os erros dos itens', () 
   console.log('INGÊNUA:', JSON.stringify(tree), '| com :root:', JSON.stringify(validateAllSync(s2, form)));
   expect(tree.items).toBe('mínimo 4');
 });
+
+// Alternativa mais forte ao mapa plano não mantido: o mapa plano COM renumeração (experiments/pitfalls/flatMap.mjs).
+// Ele também mantém a paridade; o custo é renumerar as chaves por prefixo, em todos os níveis.
+it('mapa plano com renumeração: remoção e inserção mantêm a paridade, inclusive em sublistas', async () => {
+  const { removeFlat, insertFlat } = await import('../../experiments/pitfalls/flatMap.mjs');
+  const flat = {
+    'items[0].name': 'a', 'items[1].name': 'b', 'items[1].tags[0]': 'b0', 'items[2].name': 'c', 'items[2].tags[1]': 'c1', 'items': 'mínimo 4',
+  };
+  expect(removeFlat(flat, 'items', 1)).toEqual({ 'items[0].name': 'a', 'items[1].name': 'c', 'items[1].tags[1]': 'c1', 'items': 'mínimo 4' });
+  expect(insertFlat(flat, 'items', 1)).toEqual({
+    'items[0].name': 'a', 'items[2].name': 'b', 'items[2].tags[0]': 'b0', 'items[3].name': 'c', 'items[3].tags[1]': 'c1', 'items': 'mínimo 4',
+  });
+  // remover numa sublista renumera só aquela sublista
+  expect(removeFlat({ 'items[2].tags[0]': 'x', 'items[2].tags[1]': 'y', 'items[3].tags[1]': 'z' }, 'items[2].tags', 0))
+    .toEqual({ 'items[2].tags[0]': 'y', 'items[3].tags[1]': 'z' });
+});

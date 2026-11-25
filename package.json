@@ -5,8 +5,11 @@
   "scripts": {
     "test": "vitest run tests",
     "typecheck": "tsc -p . && ngc -p tsconfig.angular.json --noEmit",
-    "bench": "npm run bench:schema && npm run bench:react && npm run bench:vue && npm run bench:angular",
+    "bench": "npm run bench:schema && npm run bench:types && npm run bench:react && npm run bench:vue && npm run bench:angular",
+    "bench:runs": "node scripts/bench-runs.mjs",
+    "bench:summary": "node scripts/summarize.mjs",
     "bench:schema": "node benchmarks/schema/bench.mjs",
+    "bench:types": "node benchmarks/types/bench.mjs",
     "bench:react": "vitest run benchmarks/react/structure --silent=false",
     "bench:vue": "vitest run benchmarks/vue/structure --silent=false",
     "bench:angular": "vitest run benchmarks/angular/structure --silent=false",
@@ -15,7 +18,8 @@
     "zod:test": "vitest run experiments/zod",
     "initial": "vitest run experiments/initial --silent=false",
     "dev:react": "vite --config demo/react/vite.config.mjs",
-    "dev:vue": "vite --config demo/vue/vite.config.mjs"
+    "dev:vue": "vite --config demo/vue/vite.config.mjs",
+    "gen:vue": "node benchmarks/vue/generate.mjs"
   },
   "license": "ISC",
   "type": "module",
@@ -61,5 +65,8 @@
     "yup": "^1.7.1",
     "zod": "^4.6.7"
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=24.21 <25"
+  }
 }

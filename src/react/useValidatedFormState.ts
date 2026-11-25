@@ -14,15 +14,23 @@ export type FieldProps<V = any> = {
 
 export function useValidatedFormState<T extends object>(schema: yup.ObjectSchema<T>, options: FormOptions = {}) {
   const [state, setState] = useState<T>(() => schema.getDefault() as T);
-  const [errors, setErrors] = useState<ErrorTree>({});
+  const [errors, setErrorsState] = useState<ErrorTree>({});
 
-  // Estado e erros mais recentes para callbacks estáveis; atualizados antes dos efeitos dos inputs.
+  // Estado mais recente para callbacks estáveis; atualizado antes dos efeitos dos inputs.
   const latestState = useRef(state);
-  const latestErrors = useRef(errors);
   useLayoutEffect(() => {
     latestState.current = state;
-    latestErrors.current = errors;
-  }, [state, errors]);
+  }, [state]);
+
+  // Árvore de erros mais recente, atualizada na hora em cada escrita (não espera o commit).
+  // Toda escrita passa por aqui: assim writeError compara com ela ANTES de chamar setState.
+  const latestErrors = useRef(errors);
+  const setErrors = useCallback((next: ErrorTree | ((prev: ErrorTree) => ErrorTree)) => {
+    const value = typeof next === 'function' ? next(latestErrors.current) : next;
+    if (value === latestErrors.current) return; // nada mudou: nenhum render, nem do formulário
+    latestErrors.current = value;
+    setErrorsState(value);
+  }, []);
 
   /** Uma escrita só, e só se a mensagem mudou (Immer devolve a mesma referência se nada mudar). */
   const writeError = useCallback((path: string, message?: string) => {
@@ -30,7 +38,7 @@ export function useValidatedFormState<T extends object>(schema: yup.ObjectSchema
       const at = errorPath(schema, path, options.rootSuffix);
       if (_get(draft, at) !== message) _set(draft, at, message);
     }));
-  }, [schema, options.rootSuffix]);
+  }, [schema, setErrors, options.rootSuffix]);
 
   const validateField = useCallback((path: string) => {
     writeError(path, validateAtSync(schema, path, latestState.current));
@@ -40,7 +48,7 @@ export function useValidatedFormState<T extends object>(schema: yup.ObjectSchema
         writeError(dependent, validateAtSync(schema, dependent, latestState.current));
       }
     }
-  }, [schema, writeError, options.dependents]);
+  }, [schema, writeError, options.dependents, options.rootSuffix]);
 
   const setValue = useCallback((path: string, value: unknown) => {
     setState((prev) => produce(prev, (draft) => {
@@ -64,7 +72,7 @@ export function useValidatedFormState<T extends object>(schema: yup.ObjectSchema
     const tree = validateAllSync(schema, latestState.current, options.rootSuffix);
     setErrors(tree ?? {}); // substitui a árvore inteira
     return tree === null;
-  }, [schema, options.rootSuffix]);
+  }, [schema, setErrors, options.rootSuffix]);
 
   /** Remove o item do array E o nó de erros correspondente: a árvore continua paralela à lista. */
   const removeItem = useCallback((path: string, index: number) => {
@@ -75,7 +83,7 @@ export function useValidatedFormState<T extends object>(schema: yup.ObjectSchema
       const items = _get(draft, path);
       if (Array.isArray(items)) items.splice(index, 1);
     }));
-  }, []);
+  }, [setErrors]);
 
   const addItem = useCallback((path: string, item: unknown) => {
     setState((prev) => produce(prev, (draft) => {
@@ -86,7 +94,7 @@ export function useValidatedFormState<T extends object>(schema: yup.ObjectSchema
   const clearForm = useCallback(() => {
     setState(schema.getDefault() as T);
     setErrors({});
-  }, [schema]);
+  }, [schema, setErrors]);
 
   return { state, setState, setValue, errors, setErrors, field, validate, validateField, removeItem, addItem, clearForm };
 }

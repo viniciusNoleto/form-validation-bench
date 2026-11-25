@@ -3,23 +3,21 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { h, nextTick } from 'vue';
 import PrimeVue from 'primevue/config';
 import * as yup from 'yup';
-import fs from 'node:fs';
 import { stats } from './stats';
-import FormW20 from './components/FormW20.vue';
-import FormF20 from './components/FormF20.vue';
-import FormFW20 from './components/FormFW20.vue';
-import FormWC20 from './components/FormWC20.vue';
-import FormW500 from './components/FormW500.vue';
-import FormF500 from './components/FormF500.vue';
-import FormFW500 from './components/FormFW500.vue';
-import FormWC500 from './components/FormWC500.vue';
-import FormWD20 from './components/FormWD20.vue';
-import FormWD500 from './components/FormWD500.vue';
+import { RUN, shuffled, writeRun } from '../shared/runs.mjs';
+
+// Formulários gerados por benchmarks/vue/generate.mjs: Form<variante><campos>.vue
+const COMPONENTS = import.meta.glob('./components/Form*.vue', { eager: true, import: 'default' }) as Record<string, any>;
+const form = (key: string, n: number) => {
+  const c = COMPONENTS[`./components/Form${key}${n}.vue`];
+  if (!c) throw new Error(`Form${key}${n}.vue não gerado`);
+  return c;
+};
 
 const make = (n: number) => yup.object(Object.fromEntries(Array.from({ length: n }, (_, i) => [`f${i}`, i === 0
   ? yup.string().required('obrigatório').email('e-mail inválido').default('')
   : yup.string().required('obrigatório').default('')])));
-const s20 = make(20), s500 = make(500);
+const SCHEMAS: Record<number, yup.ObjectSchema<any>> = { 20: make(20), 100: make(100), 500: make(500) };
 const global = { plugins: [[PrimeVue, { unstyled: true }]] as any };
 const TEXT = 'fulano.de.tal@exemplo.com';
 const LONG = 'fulano.de.tal.da.silva.sauro@exemplo-de-dominio.com.br';
@@ -27,10 +25,28 @@ const flush = async () => { await flushPromises(); await nextTick(); };
 const flickers = (t: (string | null)[]) => { let n = 0; for (let i = 2; i < t.length; i++) if (t[i - 2] && t[i - 1] === null && t[i] === t[i - 2]) n++; return n; };
 const fake = () => vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'] });
 
-/** Digita `text` no campo f0, uma tecla a cada `intervalMs`, e sai do campo. */
-async function type(Comp: any, text: string, intervalMs: number, debounce: boolean) {
+type Variant = { key: string; name: string; debounce: boolean; validates: boolean };
+const V = (key: string, name: string, opts: Partial<Variant> = {}): Variant => ({ key, name, debounce: false, validates: true, ...opts });
+const VARIANTS: Variant[] = [
+  V('H', 'H · wrapper sem validação (linha de base do harness)', { validates: false }),
+  V('W', 'W · wrapper por tipo, validação no evento (forma adotada)'),
+  V('F', 'F · frame + provide/inject, validação no evento'),
+  V('FWN', 'FWN · frame + provide/inject, watch sem debounce'),
+  V('FW', 'FW · frame + provide/inject, watch + debounce 200 ms', { debounce: true }),
+  V('WC', 'WC · wrapper, assíncrono, limpar e regravar (forma anterior)'),
+  V('WCS', 'WCS · wrapper, síncrono, limpar e regravar'),
+  V('WD', 'WD · wrapper, evento + debounce 200 ms', { debounce: true }),
+];
+const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
+
+/**
+ * Digita `text` no campo f0, uma tecla a cada `intervalMs`, e sai do campo.
+ * Janela medida: cada tecla e o avanço do relógio até a próxima, mais os 300 ms finais em que
+ * um debounce pendente dispara; ficam fora as asserções e o blur.
+ */
+async function type(v: Variant, text: string, intervalMs: number, n = 20) {
   fake();
-  const w = mount({ render: () => h(Comp, { schema: s20 }) }, { attachTo: document.body, global });
+  const w = mount({ render: () => h(form(v.key, n), { schema: SCHEMAS[n] }) }, { attachTo: document.body, global });
   await flush(); stats.reset();
   const input = w.find('input[aria-label="f0"]');
   let ms = 0;
@@ -40,69 +56,79 @@ async function type(Comp: any, text: string, intervalMs: number, debounce: boole
     await vi.advanceTimersByTimeAsync(intervalMs); await flush();
     ms += performance.now() - t0;
     // como no React e no Angular; com debounce, a mensagem só aparece quando a pausa passa dos 200 ms
-    if (i === 5 && (!debounce || intervalMs > 200)) expect(w.find('[role=alert]').text()).toBe('e-mail inválido');
+    if (i === 5 && v.validates && (!v.debounce || intervalMs > 200)) expect(w.find('[role=alert]').text()).toBe('e-mail inválido');
+    if (!v.validates) expect(w.find('[role=alert]').exists()).toBe(false);
   }
+  const t1 = performance.now();
   await vi.advanceTimersByTimeAsync(300); await flush();
+  ms += performance.now() - t1;
   await input.trigger('blur'); await vi.advanceTimersByTimeAsync(300); await flush();
   expect(w.find('[role=alert]').exists()).toBe(false);
-  const out = { keys: text.length, updates: stats.updates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length };
+  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length };
   await input.setValue(''); await vi.advanceTimersByTimeAsync(300); await flush();
-  expect(w.find('[role=alert]').text()).toBe('obrigatório');
+  if (v.validates) expect(w.find('[role=alert]').text()).toBe('obrigatório');
   w.unmount(); vi.useRealTimers();
   return out;
 }
 type Run = Awaited<ReturnType<typeof type>>;
 
-async function mountMs(Comp: any) {
+async function mountMs(v: Variant) {
   const t0 = performance.now();
-  const w = mount({ render: () => h(Comp, { schema: s500 }) }, { global });
+  const w = mount({ render: () => h(form(v.key, 500), { schema: SCHEMAS[500] }) }, { global });
   await nextTick();
   const ms = performance.now() - t0;
+  expect(w.findAll('input')).toHaveLength(500);
   w.unmount();
   return ms;
 }
 
-const median = (xs: number[]) => [...xs].sort((a, b) => a - b).at(Math.floor(xs.length / 2))!;
-const REPS = 15;
+const REPS = Number(process.env.BENCH_REPS ?? 15);
+const round = (x: number) => +x.toFixed(1);
+/** Contagens das repetições precisam ser idênticas: o roteiro é determinístico. */
+function counts(xs: Run[]) {
+  for (const k of ['updates', 'formUpdates', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
+  const { updates, formUpdates, validations, flickers } = xs[0];
+  return { updates, formUpdates, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)) };
+}
 
-it('Vue: estrutura do campo, gravação do erro, debounce e montagem', async () => {
-  const variants: [string, any, any, boolean][] = [
-    ['W · wrapper por tipo, evento', FormW20, FormW500, false],
-    ['F · frame + provide/inject, evento', FormF20, FormF500, false],
-    ['FW · frame + provide/inject, watch + debounce', FormFW20, FormFW500, true],
-    ['WC · wrapper por tipo, limpar e regravar', FormWC20, FormWC500, false],
-    ['WD · wrapper por tipo, evento + debounce 200ms', FormWD20, FormWD500, true],
-  ];
-  const out: Record<string, any> = {};
+it('Vue: estrutura do campo, gravação do erro, debounce, montagem e escala', async () => {
+  const variants: Record<string, any> = {};
 
-  // Contagens com 25 teclas (seção 8.3): exatas, uma execução basta.
-  for (const [name, C20, , debounce] of variants) {
-    const [slow, fast] = [await type(C20, TEXT, 250, debounce), await type(C20, TEXT, 60, debounce)];
-    out[name] = {
-      '25 teclas · 250ms': { updates: slow.updates, validations: slow.validations, flickers: slow.flickers },
-      '25 teclas · 60ms': { updates: fast.updates, validations: fast.validations, flickers: fast.flickers },
-    };
+  // Contagens com 25 teclas (seção 8.3).
+  for (const v of VARIANTS) {
+    const [slow, fast] = [await type(v, TEXT, 250), await type(v, TEXT, 60)];
+    const c = ({ updates, formUpdates, validations, flickers }: Run) => ({ updates, formUpdates, validations, flickers });
+    variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
-  // 54 teclas (seções 8.4 e 8.5) e montagem de 500 campos: intercalado, REPS repetições, mediana dos tempos.
-  for (const [, , C500] of variants) await mountMs(C500); // aquecimento
+  // Aquecimento da digitação e da montagem.
+  for (const v of VARIANTS) { await type(v, LONG, 60); await mountMs(v); }
+
+  // 54 teclas (seções 8.4 e 8.5) e montagem de 500 campos: REPS repetições, ordem sorteada a cada repetição.
   const runs: Record<string, { slow: Run[]; fast: Run[]; mount: number[] }> = {};
-  for (let r = 0; r < REPS; r++) for (const [name, C20, C500, debounce] of variants) {
-    const run = (runs[name] ??= { slow: [], fast: [], mount: [] });
-    run.slow.push(await type(C20, LONG, 250, debounce));
-    run.fast.push(await type(C20, LONG, 60, debounce));
-    run.mount.push(await mountMs(C500));
+  for (let r = 0; r < REPS; r++) for (const v of shuffled(VARIANTS, RUN * 1000 + r)) {
+    const run = (runs[v.key] ??= { slow: [], fast: [], mount: [] });
+    run.slow.push(await type(v, LONG, 250));
+    run.fast.push(await type(v, LONG, 60));
+    run.mount.push(await mountMs(v));
   }
-  const summary = (xs: Run[]) => ({ updates: xs[0].updates, validations: xs[0].validations, usPerKey: Math.round(median(xs.map((x) => x.usPerKey))) });
-  for (const [name] of variants) {
-    const { slow, fast, mount } = runs[name];
-    Object.assign(out[name], {
-      '54 teclas · 250ms': summary(slow),
-      '54 teclas · 60ms': summary(fast),
-      'montagem 500 campos ms': +median(mount).toFixed(1),
-    });
+  for (const v of VARIANTS) {
+    const { slow, fast, mount } = runs[v.key];
+    Object.assign(variants[v.key], { keys54: { '250ms': counts(slow), '60ms': counts(fast) }, mount500_ms: mount.map(round) });
   }
 
-  fs.writeFileSync('results/vue-structure.json', JSON.stringify(out, null, 2));
-  console.log(JSON.stringify(out, null, 1));
-}, 600000);
+  // Escala: forma adotada (W) e linha de base (H) com 20, 100 e 500 campos.
+  const cells = ['H', 'W'].flatMap((key) => [20, 100, 500].map((n) => ({ key, n })));
+  const scaling: Record<string, Run[]> = {};
+  for (const { key, n } of cells) await type(byKey[key], LONG, 250, n); // aquecimento
+  for (let r = 0; r < REPS; r++) for (const { key, n } of shuffled(cells, RUN * 2000 + r)) {
+    (scaling[`${key}@${n}`] ??= []).push(await type(byKey[key], LONG, 250, n));
+  }
+
+  const file = writeRun('vue', {
+    method: 'jsdom + @vue/test-utils, InputText do PrimeVue; updates = onBeforeUpdate dos componentes de campo; formUpdates = do formulário pai',
+    variants,
+    scaling: Object.fromEntries(Object.entries(scaling).map(([k, xs]) => [k, { key: k.split('@')[0], n: +k.split('@')[1], ...counts(xs) }])),
+  });
+  console.log('gravado em', file);
+}, 3_600_000);

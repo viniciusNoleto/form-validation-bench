@@ -1,3 +1,4 @@
+<!-- gerado por benchmarks/vue/generate.mjs: não editar à mão -->
 <template>
   <form>
     <BenchFrame v-model="form.f0" name="f0" :error="error('f0')" :validate="validate" use-watch :debounce="200"><BenchCore label="f0" /></BenchFrame>
@@ -24,9 +25,13 @@
 </template>
 
 <script setup lang="ts">
+  import { onBeforeUpdate } from 'vue';
   import BenchFrame from './BenchFrame.vue';
   import BenchCore from './BenchCore.vue';
   import { useFinal } from '../composables';
+  import { stats } from '../stats';
   const props = defineProps<{ schema: any }>();
   const { form, validate, error } = useFinal(props.schema);
+  void validate;
+  onBeforeUpdate(() => { stats.formUpdates++; });
 </script>

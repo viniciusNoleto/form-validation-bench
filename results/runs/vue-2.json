@@ -1,0 +1,820 @@
+{
+  "meta": {
+    "run": 2,
+    "date": "2026-11-24T23:18:18.497Z",
+    "node": "v24.21.0",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "platform": "linux 6.18.58.1-microsoft-standard-WSL2"
+  },
+  "method": "jsdom + @vue/test-utils, InputText do PrimeVue; updates = onBeforeUpdate dos componentes de campo; formUpdates = do formulário pai",
+  "variants": {
+    "H": {
+      "name": "H · wrapper sem validação (linha de base do harness)",
+      "counts25": {
+        "250ms": {
+          "updates": 25,
+          "formUpdates": 25,
+          "validations": 0,
+          "flickers": 0
+        },
+        "60ms": {
+          "updates": 25,
+          "formUpdates": 25,
+          "validations": 0,
+          "flickers": 0
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 54,
+          "formUpdates": 54,
+          "validations": 0,
+          "flickers": 0,
+          "samples_us": [
+            167.8,
+            143.3,
+            148.8,
+            247.2,
+            122.2,
+            122,
+            132,
+            117.1,
+            133,
+            133.7,
+            135.4,
+            124.4,
+            121.2,
+            118.3,
+            216.1
+          ]
+        },
+        "60ms": {
+          "updates": 54,
+          "formUpdates": 54,
+          "validations": 0,
+          "flickers": 0,
+          "samples_us": [
+            141.2,
+            144,
+            120.1,
+            133.2,
+            116.1,
+            127,
+            122.9,
+            124.9,
+            118,
+            138.3,
+            122.9,
+            130.1,
+            124.2,
+            116.3,
+            113.4
+          ]
+        }
+      },
+      "mount500_ms": [
+        171.8,
+        156.2,
+        157,
+        155.5,
+        158.2,
+        151.7,
+        163.2,
+        159.9,
+        158.5,
+        160.6,
+        166.8,
+        163.4,
+        158.9,
+        150,
+        146.4
+      ]
+    },
+    "W": {
+      "name": "W · wrapper por tipo, validação no evento (forma adotada)",
+      "counts25": {
+        "250ms": {
+          "updates": 25,
+          "formUpdates": 25,
+          "validations": 26,
+          "flickers": 0
+        },
+        "60ms": {
+          "updates": 25,
+          "formUpdates": 25,
+          "validations": 26,
+          "flickers": 0
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 54,
+          "formUpdates": 54,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            215.3,
+            183.7,
+            176.4,
+            190.5,
+            609.7,
+            165.1,
+            608,
+            265.4,
+            744.4,
+            166.2,
+            170.8,
+            166.3,
+            158.3,
+            149.8,
+            146
+          ]
+        },
+        "60ms": {
+          "updates": 54,
+          "formUpdates": 54,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            216.1,
+            169.6,
+            190,
+            170.8,
+            156.9,
+            161.1,
+            154.2,
+            163.3,
+            157.4,
+            156.3,
+            162,
+            158.9,
+            159.9,
+            172.5,
+            236.9
+          ]
+        }
+      },
+      "mount500_ms": [
+        171.2,
+        176,
+        155.2,
+        162.9,
+        158.6,
+        168.8,
+        161.7,
+        150.7,
+        159.3,
+        159.6,
+        158.4,
+        158.7,
+        153.4,
+        148.2,
+        146
+      ]
+    },
+    "F": {
+      "name": "F · frame + provide/inject, validação no evento",
+      "counts25": {
+        "250ms": {
+          "updates": 50,
+          "formUpdates": 25,
+          "validations": 26,
+          "flickers": 0
+        },
+        "60ms": {
+          "updates": 50,
+          "formUpdates": 25,
+          "validations": 26,
+          "flickers": 0
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 108,
+          "formUpdates": 54,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            209.9,
+            188.6,
+            203.6,
+            589.4,
+            196.2,
+            193.8,
+            181.3,
+            591.9,
+            178.5,
+            184.8,
+            286.2,
+            261.8,
+            177.1,
+            168.9,
+            311.7
+          ]
+        },
+        "60ms": {
+          "updates": 108,
+          "formUpdates": 54,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            224.6,
+            285,
+            187.1,
+            222.5,
+            183.7,
+            175,
+            180.6,
+            164.8,
+            179.8,
+            178.7,
+            186.1,
+            169.8,
+            166.2,
+            163.4,
+            162.6
+          ]
+        }
+      },
+      "mount500_ms": [
+        197.1,
+        190.6,
+        187.5,
+        201.3,
+        192.5,
+        192,
+        186.8,
+        201.9,
+        192.8,
+        192.7,
+        186.3,
+        186.6,
+        189.6,
+        181.6,
+        182.4
+      ]
+    },
+    "FWN": {
+      "name": "FWN · frame + provide/inject, watch sem debounce",
+      "counts25": {
+        "250ms": {
+          "updates": 54,
+          "formUpdates": 29,
+          "validations": 26,
+          "flickers": 0
+        },
+        "60ms": {
+          "updates": 54,
+          "formUpdates": 29,
+          "validations": 26,
+          "flickers": 0
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 118,
+          "formUpdates": 64,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            215.9,
+            207.5,
+            208.1,
+            202.6,
+            624.7,
+            221.2,
+            203,
+            596.6,
+            180,
+            195.1,
+            317.9,
+            192.2,
+            178.9,
+            190.1,
+            186.9
+          ]
+        },
+        "60ms": {
+          "updates": 118,
+          "formUpdates": 64,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            657.3,
+            195.5,
+            209.5,
+            210.7,
+            205,
+            186.2,
+            204.6,
+            175.6,
+            185.7,
+            206.7,
+            175.8,
+            187.1,
+            179.5,
+            179.2,
+            288.7
+          ]
+        }
+      },
+      "mount500_ms": [
+        207.7,
+        202.1,
+        194.9,
+        191.3,
+        201.6,
+        193,
+        190.2,
+        205.2,
+        193.8,
+        191.9,
+        186.4,
+        186.2,
+        191.6,
+        181.4,
+        216
+      ]
+    },
+    "FW": {
+      "name": "FW · frame + provide/inject, watch + debounce 200 ms",
+      "counts25": {
+        "250ms": {
+          "updates": 54,
+          "formUpdates": 29,
+          "validations": 26,
+          "flickers": 0
+        },
+        "60ms": {
+          "updates": 50,
+          "formUpdates": 25,
+          "validations": 2,
+          "flickers": 0
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 118,
+          "formUpdates": 64,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            234.9,
+            229.1,
+            237.4,
+            280.9,
+            215.4,
+            315.9,
+            219.8,
+            245.8,
+            210.3,
+            216.9,
+            696,
+            206.8,
+            208.9,
+            193.6,
+            312.4
+          ]
+        },
+        "60ms": {
+          "updates": 108,
+          "formUpdates": 54,
+          "validations": 2,
+          "flickers": 0,
+          "samples_us": [
+            157.2,
+            605.6,
+            160.3,
+            139.9,
+            136.1,
+            127.1,
+            124.4,
+            136.3,
+            127.1,
+            150,
+            130.7,
+            125.3,
+            137.8,
+            126.2,
+            127.3
+          ]
+        }
+      },
+      "mount500_ms": [
+        198.6,
+        199.9,
+        196.3,
+        192.4,
+        186.8,
+        192,
+        188.6,
+        192.2,
+        195,
+        193.2,
+        195.2,
+        187.2,
+        190,
+        204,
+        184.3
+      ]
+    },
+    "WC": {
+      "name": "WC · wrapper, assíncrono, limpar e regravar (forma anterior)",
+      "counts25": {
+        "250ms": {
+          "updates": 40,
+          "formUpdates": 40,
+          "validations": 26,
+          "flickers": 13
+        },
+        "60ms": {
+          "updates": 40,
+          "formUpdates": 40,
+          "validations": 26,
+          "flickers": 13
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 87,
+          "formUpdates": 87,
+          "validations": 55,
+          "flickers": 28,
+          "samples_us": [
+            366.3,
+            255,
+            254.4,
+            245.7,
+            315.1,
+            225,
+            241.3,
+            226.7,
+            218,
+            234.8,
+            210,
+            810.4,
+            651.8,
+            241.1,
+            221.7
+          ]
+        },
+        "60ms": {
+          "updates": 87,
+          "formUpdates": 87,
+          "validations": 55,
+          "flickers": 28,
+          "samples_us": [
+            254.3,
+            243.2,
+            228.6,
+            238.3,
+            219.9,
+            324.7,
+            246.3,
+            257.1,
+            212.4,
+            221,
+            229.8,
+            218.2,
+            199.6,
+            199.1,
+            218.3
+          ]
+        }
+      },
+      "mount500_ms": [
+        189.9,
+        156.4,
+        165.2,
+        158.5,
+        154.1,
+        151.1,
+        160.2,
+        162.7,
+        156.6,
+        166,
+        167.1,
+        166.7,
+        159.3,
+        156.2,
+        155.2
+      ]
+    },
+    "WCS": {
+      "name": "WCS · wrapper, síncrono, limpar e regravar",
+      "counts25": {
+        "250ms": {
+          "updates": 25,
+          "formUpdates": 25,
+          "validations": 26,
+          "flickers": 0
+        },
+        "60ms": {
+          "updates": 25,
+          "formUpdates": 25,
+          "validations": 26,
+          "flickers": 0
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 54,
+          "formUpdates": 54,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            203.1,
+            278.3,
+            612.9,
+            179.6,
+            175.4,
+            180.4,
+            177.2,
+            168.7,
+            230.5,
+            560.1,
+            176.7,
+            170.8,
+            168,
+            628.9,
+            156.9
+          ]
+        },
+        "60ms": {
+          "updates": 54,
+          "formUpdates": 54,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            179.3,
+            195.4,
+            168.7,
+            199.5,
+            172,
+            164.4,
+            162.6,
+            160.4,
+            161,
+            156.7,
+            159.3,
+            158.1,
+            154.3,
+            142.6,
+            151.5
+          ]
+        }
+      },
+      "mount500_ms": [
+        166.9,
+        167.6,
+        158.4,
+        163.1,
+        163.3,
+        154.8,
+        162.2,
+        160.2,
+        154.4,
+        159.3,
+        164.9,
+        161.4,
+        160.7,
+        153.9,
+        151.6
+      ]
+    },
+    "WD": {
+      "name": "WD · wrapper, evento + debounce 200 ms",
+      "counts25": {
+        "250ms": {
+          "updates": 29,
+          "formUpdates": 29,
+          "validations": 26,
+          "flickers": 0
+        },
+        "60ms": {
+          "updates": 25,
+          "formUpdates": 25,
+          "validations": 2,
+          "flickers": 0
+        }
+      },
+      "keys54": {
+        "250ms": {
+          "updates": 64,
+          "formUpdates": 64,
+          "validations": 55,
+          "flickers": 0,
+          "samples_us": [
+            256.3,
+            639.6,
+            225.7,
+            244.5,
+            191.8,
+            591.1,
+            193.7,
+            281.8,
+            268.2,
+            180.8,
+            184.5,
+            631.9,
+            171.8,
+            204.9,
+            168.1
+          ]
+        },
+        "60ms": {
+          "updates": 54,
+          "formUpdates": 54,
+          "validations": 2,
+          "flickers": 0,
+          "samples_us": [
+            145.1,
+            125.1,
+            118.9,
+            134.1,
+            124,
+            110.1,
+            128.6,
+            119,
+            125.2,
+            117.4,
+            113.8,
+            104.7,
+            110.1,
+            116.4,
+            106.5
+          ]
+        }
+      },
+      "mount500_ms": [
+        168.4,
+        169.4,
+        163.2,
+        159.9,
+        156.2,
+        160.2,
+        156,
+        159.2,
+        161.8,
+        160.4,
+        162.6,
+        167.4,
+        158.9,
+        165.8,
+        165.7
+      ]
+    }
+  },
+  "scaling": {
+    "H@500": {
+      "key": "H",
+      "n": 500,
+      "updates": 54,
+      "formUpdates": 54,
+      "validations": 0,
+      "flickers": 0,
+      "samples_us": [
+        903.2,
+        829.5,
+        829.4,
+        904.6,
+        897.3,
+        803.6,
+        856.3,
+        830.7,
+        902.2,
+        912.3,
+        835.8,
+        1387.4,
+        852.9,
+        823.1,
+        870.2
+      ]
+    },
+    "W@500": {
+      "key": "W",
+      "n": 500,
+      "updates": 54,
+      "formUpdates": 54,
+      "validations": 55,
+      "flickers": 0,
+      "samples_us": [
+        903.8,
+        917.9,
+        971.9,
+        1584.3,
+        914.5,
+        891.6,
+        908.5,
+        1610.9,
+        889.9,
+        986.3,
+        903.8,
+        921,
+        929.5,
+        922.5,
+        882.4
+      ]
+    },
+    "H@20": {
+      "key": "H",
+      "n": 20,
+      "updates": 54,
+      "formUpdates": 54,
+      "validations": 0,
+      "flickers": 0,
+      "samples_us": [
+        118.1,
+        118.5,
+        128.7,
+        116.2,
+        134.5,
+        119.2,
+        114,
+        109.3,
+        125.7,
+        117.5,
+        113.5,
+        117.3,
+        162.7,
+        115.6,
+        129.8
+      ]
+    },
+    "W@100": {
+      "key": "W",
+      "n": 100,
+      "updates": 54,
+      "formUpdates": 54,
+      "validations": 55,
+      "flickers": 0,
+      "samples_us": [
+        282.8,
+        347.3,
+        270.5,
+        300.7,
+        280.2,
+        299.9,
+        307,
+        282.7,
+        286.1,
+        276.7,
+        347.8,
+        288.3,
+        321.5,
+        263.6,
+        268.6
+      ]
+    },
+    "H@100": {
+      "key": "H",
+      "n": 100,
+      "updates": 54,
+      "formUpdates": 54,
+      "validations": 0,
+      "flickers": 0,
+      "samples_us": [
+        235.3,
+        232.4,
+        237.9,
+        241.3,
+        241.6,
+        284.3,
+        265.5,
+        230.6,
+        310.1,
+        232.2,
+        279.7,
+        267.3,
+        232.2,
+        220.8,
+        283.1
+      ]
+    },
+    "W@20": {
+      "key": "W",
+      "n": 20,
+      "updates": 54,
+      "formUpdates": 54,
+      "validations": 55,
+      "flickers": 0,
+      "samples_us": [
+        152.5,
+        164.7,
+        157.4,
+        163.2,
+        155.9,
+        154.1,
+        151,
+        148.1,
+        152.9,
+        239.6,
+        152.9,
+        168.9,
+        171.3,
+        156.5,
+        146.8
+      ]
+    }
+  }
+}

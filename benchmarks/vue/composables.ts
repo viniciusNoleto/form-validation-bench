@@ -30,3 +30,16 @@ export function useClearThenSet(schema: yup.ObjectSchema<any>) {
   }
   return { form, validate, error: (p: string) => readError(schema, errors.value, p) };
 }
+
+/** Alternativa síncrona: limpar e regravar no mesmo tique, com validateSyncAt (separa o fator "assíncrono"). */
+export function useClearThenSetSync(schema: yup.ObjectSchema<any>) {
+  const form = ref(schema.getDefault()) as Ref<any>;
+  const errors = ref<Record<string, any>>({});
+  function validate(path: string) {
+    stats.validations++;
+    const at = errorPath(schema, path);
+    _set(errors.value, at, undefined);
+    _set(errors.value, at, validateAtSync(schema, path, form.value));
+  }
+  return { form, validate, error: (p: string) => readError(schema, errors.value, p) };
+}
