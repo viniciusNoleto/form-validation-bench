@@ -8,9 +8,25 @@ import { validatedForm, type FieldRef } from '../../src/angular/validatedForm';
 import { readError, validateAtSync } from '../../src/core/formCore';
 import { changedPaths } from '../shared/changedPaths';
 import { stats } from './stats';
+import type { FormGroup } from '@angular/forms';
+import type { FieldTree } from '@angular/forms/signals';
+import { formlyConfig, reactiveGroup, signalTree } from './libs';
 
 /** kind: estrutura do campo no BenchForm (padrão: o wrapper BenchField, que valida no evento). */
-export type BenchForm = { field: (path: string) => FieldRef; kind?: 'observed' | 'frame' | 'effect'; destroy?: () => void };
+export type BenchForm = {
+  field: (path: string) => FieldRef;
+  kind?: 'observed' | 'frame' | 'effect' | 'reactive' | 'signal' | 'formly';
+  destroy?: () => void;
+  /** variantes de biblioteca (benchmarks/angular/libs.ts) */
+  group?: FormGroup;
+  tree?: FieldTree<any>;
+  formly?: ReturnType<typeof formlyConfig>;
+};
+
+const noField = (): FieldRef => { throw new Error('variante de biblioteca: o campo vem da própria biblioteca'); };
+export const reactiveForm = (schema: yup.ObjectSchema<any>): BenchForm => ({ kind: 'reactive', field: noField, group: reactiveGroup(schema) });
+export const signalForms = (schema: yup.ObjectSchema<any>): BenchForm => { const { tree, destroy } = signalTree(schema); return { kind: 'signal', field: noField, tree, destroy }; };
+export const formlyForm = (schema: yup.ObjectSchema<any>): BenchForm => ({ kind: 'formly', field: noField, formly: formlyConfig(schema) });
 
 /** A forma adotada com outra estrutura de campo: frame (F) ou wrapper que observa o próprio valor (WN). */
 export const withKind = (kind: BenchForm['kind']) => (schema: yup.ObjectSchema<any>): BenchForm => ({ ...finalForm(schema), kind });

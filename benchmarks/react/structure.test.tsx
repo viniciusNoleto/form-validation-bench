@@ -1,10 +1,9 @@
 import { it, expect, afterEach, vi } from 'vitest';
 import { render, fireEvent, act, cleanup } from '@testing-library/react';
 import * as yup from 'yup';
-// A = cópia do hook anterior de produção (assíncrono, limpar e regravar); TextField = campo com useNotFirstEffect + onBlur
-import { stats, useValidatedFormStateA, TextField, MemoTextField, MemoDebouncedTextField, MemoBlurTextField, MemoFrameField } from './baseline-hooks.jsx';
-import { useFormVariant, type WriteMode } from './variantHooks';
-import { useValidatedFormState } from '../../src/react/useValidatedFormState';
+import { stats } from './baseline-hooks.jsx';
+// Formulários das variantes (A = reconstrução do hook anterior de produção; ver forms.tsx)
+import { FORMS } from './forms';
 import { RUN, shuffled, writeRun } from '../shared/runs.mjs';
 afterEach(() => cleanup());
 
@@ -16,44 +15,25 @@ const SCHEMAS: Record<number, yup.ObjectSchema<any>> = { 20: make(20), 100: make
 const TEXT = 'fulano.de.tal@exemplo.com'; // 25 teclas (contagens)
 const LONG = 'fulano.de.tal.da.silva.sauro@exemplo-de-dominio.com.br'; // 54 teclas (tempo por tecla)
 
-// conta validações sem quebrar a estabilidade dos callbacks
-const wrapped = new Map<Function, Function>();
-function countValidate(fn: () => void) {
-  let w = wrapped.get(fn);
-  if (!w) { w = () => { stats.validations++; fn(); }; wrapped.set(fn, w); }
-  return w as () => void;
-}
-/** O hook de src/react, contando validações. */
-function useB(s: any) {
-  const form = useValidatedFormState(s);
-  return { ...form, field: (p: string) => { const f = form.field(p); return { ...f, onValidate: countValidate(f.onValidate) }; } };
-}
-const countCall = () => { stats.validations++; };
-const useMode = (mode: WriteMode) => (s: any) => useFormVariant(s, mode, countCall);
-
-function makeForm(useHook: any, Field: any) {
-  return function Form({ schema }: { schema: yup.ObjectSchema<any> }) {
-    stats.formRenders++;
-    const { field } = useHook(schema);
-    return <form>{Object.keys(schema.fields).map((k) => <Field key={k} name={k} {...field(k)} />)}</form>;
-  };
-}
-
 type Variant = { key: string; name: string; Form: any; debounce: boolean; validates: boolean };
 const V = (key: string, name: string, Form: any, opts: Partial<Variant> = {}): Variant => ({ key, name, Form, debounce: false, validates: true, ...opts });
 const VARIANTS: Variant[] = [
-  V('H', 'H · input sem validação (linha de base do harness), memo', makeForm(useMode('none'), MemoTextField), { validates: false }),
-  V('A', 'A · forma anterior de produção: assíncrono, limpar e regravar, sem memo', makeForm(useValidatedFormStateA, TextField)),
-  V('A2', 'A2 · hook atual, assíncrono, limpar e regravar, sem memo', makeForm(useMode('clear-async'), TextField)),
-  V('A3', 'A3 · hook atual, síncrono, limpar e regravar, sem memo', makeForm(useMode('clear-sync'), TextField)),
-  V('B0', 'B0 · gravação única dentro do updater do setErrors, sem memo', makeForm(useMode('once'), TextField)),
-  V('B', 'B · gravação única antecipada, sem memo', makeForm(useB, TextField)),
-  V('C0', 'C0 · gravação única dentro do updater do setErrors (versão anterior) + memo', makeForm(useMode('once'), MemoTextField)),
-  V('C', 'C · gravação única antecipada, sem setErrors quando nada muda, + memo (forma adotada)', makeForm(useB, MemoTextField)),
-  V('D', 'D · gravação única + memo + debounce 200 ms', makeForm(useB, MemoDebouncedTextField), { debounce: true }),
-  V('F', 'F · frame genérico + contexto, gravação antecipada + memo', makeForm(useB, MemoFrameField)),
-  V('O', 'O · observador do formulário (useEffect sobre o estado) + gravação antecipada + memo; o campo só valida no blur', makeForm(useMode('observer'), MemoBlurTextField)),
-];
+  V('H', 'H · input sem validação (linha de base do harness), memo', FORMS.H, { validates: false }),
+  V('A', 'A · forma anterior de produção: assíncrono, limpar e regravar, sem memo', FORMS.A),
+  V('A2', 'A2 · hook atual, assíncrono, limpar e regravar, sem memo', FORMS.A2),
+  V('A3', 'A3 · hook atual, síncrono, limpar e regravar, sem memo', FORMS.A3),
+  V('B0', 'B0 · gravação única dentro do updater do setErrors, sem memo', FORMS.B0),
+  V('B', 'B · gravação única antecipada, sem memo', FORMS.B),
+  V('C0', 'C0 · gravação única dentro do updater do setErrors (versão anterior) + memo', FORMS.C0),
+  V('C', 'C · gravação única antecipada, sem setErrors quando nada muda, + memo (forma adotada)', FORMS.C),
+  V('D', 'D · gravação única + memo + debounce 200 ms', FORMS.D, { debounce: true }),
+  V('F', 'F · frame genérico + contexto, gravação antecipada + memo', FORMS.F),
+  V('O', 'O · observador do formulário (useEffect sobre o estado) + gravação antecipada + memo; o campo só valida no blur', FORMS.O),
+  // Bibliotecas (benchmarks/react/libs.tsx): o mesmo esquema Yup, do jeito que cada documentação recomenda.
+  V('RHF', 'RHF · React Hook Form 7 (mode onChange, yupResolver, register + useFormState por campo)', FORMS.RHF),
+  V('TSF', 'TSF · TanStack Form 1 (validadores do formulário com o esquema, Standard Schema, na mudança e no blur)', FORMS.TSF),
+  V('FMK', 'FMK · Formik 2 (validationSchema, validateOnChange e validateOnBlur, <Field>)', FORMS.FMK),
+].filter((v) => !process.env.BENCH_ONLY || process.env.BENCH_ONLY.split(',').includes(v.key));
 const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
 
 const flickers = (t: any[]) => { let n = 0; for (let i = 2; i < t.length; i++) if (t[i - 2] && t[i - 1] === null && t[i] === t[i - 2]) n++; return n; };
@@ -90,12 +70,14 @@ async function type(variant: Variant, text: string, intervalMs: number, n = 20) 
   expect(alert()).toBeNull();
   const out = {
     renders: stats.renders, formRenders: stats.formRenders, validations: stats.validations,
-    flickers: flickers(stats.errorTrail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length,
+    whole: stats.whole, flickers: flickers(stats.errorTrail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length,
   };
   await act(async () => { fireEvent.change(input, { target: { value: '' } }); });
   await advance(300);
   if (variant.validates) expect(alert()?.textContent).toBe('obrigatório');
   cleanup();
+  // validações assíncronas pendentes (bibliotecas) terminam aqui, antes da próxima tarefa zerar as contagens
+  await vi.advanceTimersByTimeAsync(1000);
   vi.useRealTimers();
   return out;
 }
@@ -107,6 +89,8 @@ async function mountMs(variant: Variant) {
   const ms = performance.now() - t0;
   expect(container.querySelectorAll('input')).toHaveLength(500);
   cleanup();
+  // validações que a biblioteca agendou na montagem (relógio real) terminam aqui, fora da próxima tarefa
+  await act(async () => { await new Promise((r) => setTimeout(r, 100)); });
   return ms;
 }
 
@@ -114,9 +98,9 @@ const REPS = Number(process.env.BENCH_REPS ?? 15);
 const round = (x: number) => +x.toFixed(1);
 /** Contagens das 15 repetições precisam ser idênticas: o roteiro é determinístico. */
 function counts(xs: Run[]) {
-  for (const k of ['renders', 'formRenders', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
-  const { renders, formRenders, validations, flickers } = xs[0];
-  return { renders, formRenders, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
+  for (const k of ['renders', 'formRenders', 'validations', 'whole', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
+  const { renders, formRenders, validations, whole, flickers } = xs[0];
+  return { renders, formRenders, validations, whole, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
 }
 
 it('React: gravação do erro, memo, debounce, montagem e escala', async () => {
@@ -125,13 +109,13 @@ it('React: gravação do erro, memo, debounce, montagem e escala', async () => {
   // Contagens com 25 teclas (seção 8.3).
   for (const v of VARIANTS) {
     const [slow, fast] = [await type(v, TEXT, 250), await type(v, TEXT, 60)];
-    const c = ({ renders, formRenders, validations, flickers }: Run) => ({ renders, formRenders, validations, flickers });
+    const c = ({ renders, formRenders, validations, whole, flickers }: Run) => ({ renders, formRenders, validations, whole, flickers });
     variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
   // Escala: as células com 100 e 500 campos entram no MESMO sorteio das variantes (um bloco só);
   // a célula com 20 campos é a própria medição da variante (54 teclas, 250 ms).
-  const SCALE = ['H', 'C', 'C0', 'B', 'O'];
+  const SCALE = ['H', 'C', 'C0', 'B', 'O', 'RHF', 'TSF', 'FMK'].filter((k) => byKey[k]);
   const cells = SCALE.flatMap((key) => [100, 500].map((n) => ({ key, n })));
 
   // Aquecimento da digitação, da montagem e das células de escala.

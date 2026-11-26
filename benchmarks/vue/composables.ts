@@ -59,3 +59,35 @@ export function useClearThenSetSync(schema: yup.ObjectSchema<any>) {
   }
   return { form, validate, error: (p: string) => readError(schema, errors.value, p) };
 }
+
+/**
+ * Alternativa assíncrona SEM limpar: validateAt (Promise) e uma única gravação, só se a mensagem
+ * mudou. Separa o fator "assíncrono" do fator "limpar e regravar" (WC = os dois juntos).
+ */
+export function useAsyncOnce(schema: yup.ObjectSchema<any>) {
+  const form = ref(schema.getDefault()) as Ref<any>;
+  const errors = ref<Record<string, any>>({});
+  function write(path: string, message: string | undefined) {
+    const at = errorPath(schema, path);
+    if (_get(errors.value, at) !== message) _set(errors.value, at, message);
+  }
+  function validate(path: string) {
+    stats.validations++;
+    schema.validateAt(path, form.value)
+      .then(() => write(path, undefined))
+      .catch((e: any) => { if (e?.name !== 'ValidationError') throw e; write(path, e.path === path ? e.errors[0] : undefined); });
+  }
+  return { form, validate, error: (p: string) => readError(schema, errors.value, p) };
+}
+
+/**
+ * Variante OP: observador do formulário com um watch por caminho, sem cópia nem comparação.
+ * Cada watch depende só do próprio campo; quando ele muda, o formulário valida aquele caminho.
+ * O campo continua validando no blur.
+ */
+export function usePathObserver(schema: yup.ObjectSchema<any>) {
+  const { form, validate, error } = useFinal(schema);
+  // flush padrão ('pre'), como o watch profundo da variante O: roda antes do render
+  for (const key of Object.keys(schema.fields)) watch(() => form.value[key], () => validate(key));
+  return { form, validate, error };
+}

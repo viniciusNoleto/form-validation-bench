@@ -21,7 +21,9 @@ const port = server.address().port;
 
 const TEXT = 'fulano.de.tal@exemplo.com'; // 25 teclas, as mesmas das contagens da seção 8
 const REPS = Number(process.env.BROWSER_REPS ?? 5);
-const browser = await chromium.launch();
+// channel 'chromium': o Chromium completo no modo headless novo, e não o chromium-headless-shell
+const browser = await chromium.launch({ channel: 'chromium' });
+const version = browser.version();
 const results = [];
 for (let r = 0; r < REPS; r++) for (const variant of ['W', 'WC']) {
   const page = await browser.newPage();
@@ -36,4 +38,4 @@ for (let r = 0; r < REPS; r++) for (const variant of ['W', 'WC']) {
 await browser.close();
 server.close();
 console.table(results);
-console.log('gravado em', writeRun('browser', { method: `Chromium ${chromium.name()} via Playwright, headless; 25 teclas a cada 250 ms no campo f0; domFlickers = MutationObserver; paintedFlickers = amostra por requestAnimationFrame`, results }));
+console.log('gravado em', writeRun('browser', { browser: version, method: `Chromium ${version} via Playwright, channel chromium (headless novo); 25 teclas a cada 250 ms no campo f0; domFlickers = MutationObserver; paintedFlickers = amostra por requestAnimationFrame (indicador do quadro, não a pintura em si)`, results }));

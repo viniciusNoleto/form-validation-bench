@@ -31,6 +31,19 @@ function sameAcross(label, values) {
 const summary = { generatedAt: new Date().toISOString(), runs: {}, frameworks: {}, schema: null, types: null };
 const md = ['# Resumo dos benchmarks', '', `Gerado por \`npm run bench:summary\` a partir de \`results/runs/\`. Cada execução é uma sessão independente (processo próprio, ordem dos blocos alternada). Tempos: mediana das medianas de cada execução [mín–máx entre execuções]. "Só a tecla" exclui o avanço do relógio falso.`, ''];
 
+/**
+ * Comparações pareadas: as variantes rodam na mesma sessão, com a ordem sorteada, então a deriva entre
+ * sessões é comum a elas. Para cada par, a razão e a diferença das medianas são calculadas DENTRO de cada
+ * sessão. MDD (menor diferença detectável pelo critério do artigo): para que as amplitudes de duas
+ * condições fiquem disjuntas, as medianas precisam diferir de pelo menos a meia-soma das larguras das
+ * amplitudes; dividida pela mediana da referência, é a resolução relativa do critério naquela célula.
+ */
+const PAIRS = {
+  react: { ref: 'C', extra: [['A3', 'B0'], ['A2', 'A3'], ['A2', 'C'], ['B0', 'B'], ['C0', 'C'], ['B0', 'C0'], ['B', 'C'], ['D', 'H']] },
+  vue: { ref: 'W', extra: [['WC', 'WCS'], ['WC', 'WA'], ['WCS', 'W'], ['WA', 'W'], ['FWN', 'F'], ['FV', 'FVN'], ['FVN', 'F'], ['OP', 'O'], ['WD', 'H']] },
+  angular: { ref: 'W', extra: [['WCS', 'W'], ['WD', 'H']] },
+};
+
 for (const fw of ['react', 'vue', 'angular']) {
   const runs = load(fw);
   if (!runs.length) continue;
@@ -39,7 +52,7 @@ for (const fw of ['react', 'vue', 'angular']) {
   const out = { variants: {}, scaling: {} };
   for (const key of Object.keys(runs[0].variants)) {
     const vs = runs.map((r) => r.variants[key]);
-    const pick = (x) => ({ [countKey]: x[countKey], formUpdates: x.formUpdates ?? x.formRenders, validations: x.validations, flickers: x.flickers });
+    const pick = (x) => ({ [countKey]: x[countKey], formUpdates: x.formUpdates ?? x.formRenders, validations: x.validations, whole: x.whole ?? 0, flickers: x.flickers });
     out.variants[key] = {
       name: vs[0].name,
       counts25: { '250ms': sameAcross(`${fw}/${key}/25/250`, vs.map((v) => pick(v.counts25['250ms']))), '60ms': sameAcross(`${fw}/${key}/25/60`, vs.map((v) => pick(v.counts25['60ms']))) },
@@ -55,6 +68,7 @@ for (const fw of ['react', 'vue', 'angular']) {
     const c = cs[0];
     out.scaling[cell] = { key: c.key, n: c.n, ...sameAcross(`${fw}/${cell}`, cs.map((x) => ({ [countKey]: x[countKey], formUpdates: x.formUpdates ?? x.formRenders }))), usPerKey: timeStat(cs.map((x) => x.samples_us)), keyUsPerKey: timeStat(cs.map((x) => x.samples_key_us)) };
   }
+  out.paired = paired(fw, out);
   summary.frameworks[fw] = out;
 
   const fmt = (s) => `${s.median} [${s.min}–${s.max}]`;
@@ -65,7 +79,40 @@ for (const fw of ['react', 'vue', 'angular']) {
   }
   md.push('', `Escala (54 teclas a cada 250 ms):`, '', `| Variante | campos | ${countKey} | pai | µs/tecla |`, '|---|---|---|---|---|');
   for (const s of Object.values(out.scaling).sort((a, b) => a.key.localeCompare(b.key) || a.n - b.n)) md.push(`| ${s.key} | ${s.n} | ${s[countKey]} | ${s.formUpdates} | ${fmt(s.usPerKey)} |`);
+  md.push('', `Comparações pareadas por sessão (razão = variante / referência, calculada dentro de cada sessão; "sessões >1" = em quantas das ${runs.length} sessões a variante foi mais lenta; "MDD" = menor diferença relativa que o critério de amplitudes disjuntas consegue acusar nesta célula; "sobrepõem" = amplitudes entre sessões se sobrepõem):`, '',
+    '| Comparação | cadência / campos | razão mediana [mín–máx] | sessões >1 | diferença mediana, µs [mín–máx] | MDD | sobrepõem |', '|---|---|---|---|---|---|---|');
+  for (const p of out.paired) md.push(`| ${p.label} | ${p.cell} | ${p.ratio.median} [${p.ratio.min}–${p.ratio.max}] | ${p.slower}/${p.sessions} | ${p.diff.median} [${p.diff.min}–${p.diff.max}] | ${p.mdd}% | ${p.overlap ? 'sim' : 'não'} |`);
   md.push('');
+}
+
+function paired(fw, out) {
+  const cfg = PAIRS[fw];
+  const res = [];
+  const one = (label, cell, a, b) => {
+    if (!a || !b || a.runs.length !== b.runs.length) return;
+    const ratios = a.runs.map((x, i) => x / b.runs[i]);
+    const diffs = a.runs.map((x, i) => x - b.runs[i]);
+    const w = (s) => s.max - s.min;
+    res.push({
+      label, cell, sessions: ratios.length, slower: ratios.filter((r) => r > 1).length,
+      ratio: { median: r2(median(ratios)), min: r2(Math.min(...ratios)), max: r2(Math.max(...ratios)) },
+      diff: { median: r1(median(diffs)), min: r1(Math.min(...diffs)), max: r1(Math.max(...diffs)) },
+      mdd: r1((100 * (w(a) + w(b)) / 2) / b.median),
+      overlap: !(a.min > b.max || b.min > a.max),
+    });
+  };
+  const V = out.variants;
+  const keys = Object.keys(V);
+  for (const k of keys) if (k !== cfg.ref) for (const cad of ['250ms', '60ms']) one(`${k} × ${cfg.ref}`, cad, V[k].usPerKey[cad], V[cfg.ref].usPerKey[cad]);
+  for (const [a, b] of cfg.extra) if (V[a] && V[b]) for (const cad of ['250ms', '60ms']) one(`${a} × ${b}`, cad, V[a].usPerKey[cad], V[b].usPerKey[cad]);
+  // escala: cada variante contra a forma adotada e contra H no mesmo tamanho (diferença até H = custo por tecla acima da linha de base)
+  const S = out.scaling;
+  for (const n of [20, 100, 500]) {
+    const ref = S[`${cfg.ref}@${n}`];
+    for (const cell of Object.values(S).filter((c) => c.n === n && c.key !== cfg.ref)) one(`${cell.key} × ${cfg.ref}`, `${n} campos`, cell.usPerKey, ref?.usPerKey);
+    for (const cell of Object.values(S).filter((c) => c.n === n && c.key !== 'H')) one(`${cell.key} × H`, `${n} campos`, cell.usPerKey, S[`H@${n}`]?.usPerKey);
+  }
+  return res;
 }
 
 /** Micro-benchmarks: média por execução; entre execuções, mediana e intervalo; p99 = mediana dos p99. */
@@ -118,6 +165,43 @@ if (typeRuns.length) {
     const g = (lib, state) => { const a = summary.types.byType[`${lib}|${type}|${state}`]; return a ? `${a.median} (${a.min}–${a.max}, ${a.cases})` : ''; };
     md.push(`| ${type} | ${g('Yup', 'válido')} | ${g('Yup', 'inválido')} | ${g('Zod', 'válido')} | ${g('Zod', 'inválido')} |`);
   }
+  md.push('');
+}
+
+// Navegador real (experiments/browser/time.mjs): tempo da thread principal por tecla. Um arquivo com
+// REPS repetições; cada repetição roda todas as tarefas em ordem sorteada, então o pareamento é por repetição.
+const browserTime = load('browser-time')[0];
+if (browserTime) {
+  summary.runs.browserTime = [browserTime.meta];
+  const byTask = {};
+  for (const r of browserTime.results) (byTask[r.task] ??= []).push(r);
+  const stat = (xs) => ({ median: r1(median(xs)), min: r1(Math.min(...xs)), max: r1(Math.max(...xs)) });
+  const tasks = Object.fromEntries(Object.entries(byTask).map(([k, rs]) => [k, { total: stat(rs.map((r) => r.usPerKey)), script: stat(rs.map((r) => r.scriptUsPerKey)), layout: stat(rs.map((r) => r.layoutUsPerKey)), reps: rs.length }]));
+  const PAIRS_BROWSER = [
+    ['react/B@20', 'react/C@20'], ['react/B0@20', 'react/C0@20'], ['react/B0@20', 'react/B@20'], ['react/C0@20', 'react/C@20'], ['react/C@20', 'react/H@20'],
+    ['vue/WC@20', 'vue/W@20'], ['vue/WCS@20', 'vue/W@20'], ['vue/WA@20', 'vue/W@20'], ['vue/WC@20', 'vue/WCS@20'], ['vue/WC@20', 'vue/WA@20'], ['vue/W@20', 'vue/H@20'],
+    ['vue/O@500', 'vue/W@500'], ['vue/OP@500', 'vue/W@500'], ['vue/O@500', 'vue/OP@500'], ['vue/W@500', 'vue/H@500'],
+  ];
+  const pairs = [];
+  for (const [a, b] of PAIRS_BROWSER) {
+    if (!byTask[a] || !byTask[b]) continue;
+    for (const metric of ['usPerKey', 'scriptUsPerKey']) {
+      const ra = Object.fromEntries(byTask[a].map((r) => [r.rep, r[metric]]));
+      const rb = Object.fromEntries(byTask[b].map((r) => [r.rep, r[metric]]));
+      const reps = Object.keys(ra).filter((k) => k in rb);
+      const ratios = reps.map((k) => ra[k] / rb[k]);
+      const diffs = reps.map((k) => ra[k] - rb[k]);
+      pairs.push({ label: `${a} × ${b}`, metric, reps: reps.length, slower: ratios.filter((x) => x > 1).length,
+        ratio: { median: r2(median(ratios)), min: r2(Math.min(...ratios)), max: r2(Math.max(...ratios)) },
+        diff: { median: r1(median(diffs)), min: r1(Math.min(...diffs)), max: r1(Math.max(...diffs)) } });
+    }
+  }
+  summary.browserTime = { browser: browserTime.browser, method: browserTime.method, tasks, pairs };
+  md.push('## Navegador real: tempo da thread principal por tecla', '', browserTime.method, '',
+    '| Tarefa | total µs/tecla, mediana [mín–máx] | script µs/tecla | layout µs/tecla |', '|---|---|---|---|');
+  for (const [k, t] of Object.entries(tasks).sort()) md.push(`| ${k} | ${t.total.median} [${t.total.min}–${t.total.max}] | ${t.script.median} [${t.script.min}–${t.script.max}] | ${t.layout.median} |`);
+  md.push('', '| Comparação | métrica | razão mediana [mín–máx] | repetições >1 | diferença mediana, µs [mín–máx] |', '|---|---|---|---|---|');
+  for (const p of pairs) md.push(`| ${p.label} | ${p.metric === 'usPerKey' ? 'total' : 'script'} | ${p.ratio.median} [${p.ratio.min}–${p.ratio.max}] | ${p.slower}/${p.reps} | ${p.diff.median} [${p.diff.min}–${p.diff.max}] |`);
   md.push('');
 }
 

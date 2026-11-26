@@ -1,18 +1,28 @@
 {
   "meta": {
     "run": 1,
-    "date": "2026-11-25T04:54:14.500Z",
+    "date": "2026-11-26T01:56:37.084Z",
     "node": "v24.21.0",
     "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "cpus": 20,
+    "memGB": 10.7,
+    "distro": "Ubuntu 22.04.5 LTS",
     "platform": "linux 6.18.58.1-microsoft-standard-WSL2",
-    "order": null
+    "order": null,
+    "revision": {
+      "commit": "b761bd46e3a1ae72836069bcee22d5d3129c7d15",
+      "dirty": true,
+      "sourceHash": "1b8817c6c4a60418deb8103bba890bb33055ad3f31a1b77b78b86d089cae2c1c",
+      "files": 192
+    }
   },
-  "method": "Chromium chromium via Playwright, headless; 25 teclas a cada 250 ms no campo f0; domFlickers = MutationObserver; paintedFlickers = amostra por requestAnimationFrame",
+  "browser": "159.0.8154.6",
+  "method": "Chromium 159.0.8154.6 via Playwright, channel chromium (headless novo); 25 teclas a cada 250 ms no campo f0; domFlickers = MutationObserver; paintedFlickers = amostra por requestAnimationFrame (indicador do quadro, não a pintura em si)",
   "results": [
     {
       "rep": 1,
       "variant": "W",
-      "frames": 382,
+      "frames": 383,
       "domFlickers": 1,
       "paintedFlickers": 1,
       "domChanges": 4,
@@ -21,7 +31,7 @@
     {
       "rep": 1,
       "variant": "WC",
-      "frames": 383,
+      "frames": 384,
       "domFlickers": 14,
       "paintedFlickers": 1,
       "domChanges": 30,
@@ -30,7 +40,7 @@
     {
       "rep": 2,
       "variant": "W",
-      "frames": 382,
+      "frames": 383,
       "domFlickers": 1,
       "paintedFlickers": 1,
       "domChanges": 4,
@@ -39,7 +49,7 @@
     {
       "rep": 2,
       "variant": "WC",
-      "frames": 382,
+      "frames": 383,
       "domFlickers": 14,
       "paintedFlickers": 1,
       "domChanges": 30,
@@ -48,7 +58,7 @@
     {
       "rep": 3,
       "variant": "W",
-      "frames": 382,
+      "frames": 384,
       "domFlickers": 1,
       "paintedFlickers": 1,
       "domChanges": 4,
@@ -56,24 +66,6 @@
     },
     {
       "rep": 3,
-      "variant": "WC",
-      "frames": 382,
-      "domFlickers": 14,
-      "paintedFlickers": 1,
-      "domChanges": 30,
-      "frameChanges": 4
-    },
-    {
-      "rep": 4,
-      "variant": "W",
-      "frames": 382,
-      "domFlickers": 1,
-      "paintedFlickers": 1,
-      "domChanges": 4,
-      "frameChanges": 4
-    },
-    {
-      "rep": 4,
       "variant": "WC",
       "frames": 383,
       "domFlickers": 14,
@@ -82,9 +74,27 @@
       "frameChanges": 4
     },
     {
+      "rep": 4,
+      "variant": "W",
+      "frames": 384,
+      "domFlickers": 1,
+      "paintedFlickers": 1,
+      "domChanges": 4,
+      "frameChanges": 4
+    },
+    {
+      "rep": 4,
+      "variant": "WC",
+      "frames": 384,
+      "domFlickers": 14,
+      "paintedFlickers": 1,
+      "domChanges": 30,
+      "frameChanges": 4
+    },
+    {
       "rep": 5,
       "variant": "W",
-      "frames": 382,
+      "frames": 383,
       "domFlickers": 1,
       "paintedFlickers": 1,
       "domChanges": 4,
@@ -93,7 +103,7 @@
     {
       "rep": 5,
       "variant": "WC",
-      "frames": 381,
+      "frames": 385,
       "domFlickers": 14,
       "paintedFlickers": 1,
       "domChanges": 30,

@@ -5,7 +5,8 @@ import _set from 'lodash-es/set';
 import { produce } from 'immer';
 import { normalizePath, validateAtLocal, flatErrors, getDefaults } from '../../experiments/zod/zodPartial.mjs';
 
-export const stats = { renders: 0, formRenders: 0, validations: 0, errorTrail: [], reset() { this.renders = 0; this.formRenders = 0; this.validations = 0; this.errorTrail = []; } };
+// whole = chamadas que validam o formulário inteiro (só nas variantes de biblioteca, contadas no esquema)
+export const stats = { renders: 0, formRenders: 0, validations: 0, whole: 0, errorTrail: [], reset() { this.renders = 0; this.formRenders = 0; this.validations = 0; this.whole = 0; this.errorTrail = []; } };
 
 function setStateDeepValue(setState, path, value) {
   setState(prev => produce(prev, draft => { _set(draft, path, value); }));
@@ -21,7 +22,8 @@ export function useNotFirstEffect(effect, deps) {
   }, deps); // eslint-disable-line
 }
 
-// ===== A: cópia fiel da implementação atual (Yup) =====
+// ===== A: reconstrução, para o benchmark, do hook anterior de produção (Yup, assíncrono, limpar e regravar).
+// O código de produção da época não faz parte do repositório; ver a seção 8.3 do artigo. =====
 export function useValidatedFormStateA(schema) {
   const [state, setState] = useState(schema.getDefault());
   const latestState = useRef(state);

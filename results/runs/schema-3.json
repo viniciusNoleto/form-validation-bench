@@ -1,661 +1,670 @@
 {
   "meta": {
     "run": 3,
-    "date": "2026-11-25T14:20:47.889Z",
+    "date": "2026-11-26T01:17:54.854Z",
     "node": "v24.21.0",
     "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "cpus": 20,
+    "memGB": 10.7,
+    "distro": "Ubuntu 22.04.5 LTS",
     "platform": "linux 6.18.58.1-microsoft-standard-WSL2",
-    "order": "bench:react,bench:vue,bench:angular,bench:schema,bench:types"
+    "order": "bench:react,bench:vue,bench:angular,bench:schema,bench:types",
+    "revision": {
+      "commit": "b761bd46e3a1ae72836069bcee22d5d3129c7d15",
+      "dirty": true,
+      "sourceHash": "1b8817c6c4a60418deb8103bba890bb33055ad3f31a1b77b78b86d089cae2c1c",
+      "files": 192
+    }
   },
   "method": "tinybench, 400 ms por tarefa, 100 ms de aquecimento; latência por chamada",
   "results": [
     {
       "n": 3,
       "task": "Yup validateSyncAt · campo raiz válido",
-      "mean_us": 1.18,
-      "p50_us": 1.03,
-      "p99_us": 2.42,
-      "sd_us": 3.2
+      "mean_us": 1.06,
+      "p50_us": 0.98,
+      "p99_us": 1.61,
+      "sd_us": 2.31
     },
     {
       "n": 3,
       "task": "Yup validateSyncAt · campo raiz inválido",
-      "mean_us": 13.81,
-      "p50_us": 12.83,
-      "p99_us": 30.23,
-      "sd_us": 10.9
+      "mean_us": 13.02,
+      "p50_us": 12.46,
+      "p99_us": 25.52,
+      "sd_us": 6.84
     },
     {
       "n": 3,
       "task": "Yup validateSyncAt · primeiro item inválido",
-      "mean_us": 14.1,
-      "p50_us": 12.93,
-      "p99_us": 29.81,
-      "sd_us": 10.29
+      "mean_us": 13.77,
+      "p50_us": 12.78,
+      "p99_us": 26.17,
+      "sd_us": 29.48
     },
     {
       "n": 3,
       "task": "Yup validateSyncAt · último item inválido",
-      "mean_us": 13.83,
-      "p50_us": 13.13,
-      "p99_us": 26.68,
-      "sd_us": 8.13
+      "mean_us": 13.71,
+      "p50_us": 12.98,
+      "p99_us": 26.48,
+      "sd_us": 9.07
     },
     {
       "n": 3,
       "task": "Yup validateSyncAt · regra entre campos inválida",
-      "mean_us": 14.81,
-      "p50_us": 14.16,
-      "p99_us": 28.78,
-      "sd_us": 7.11
+      "mean_us": 14.35,
+      "p50_us": 13.71,
+      "p99_us": 26.84,
+      "sd_us": 10.31
     },
     {
       "n": 3,
       "task": "Yup validateSyncAt · contêiner (array inteiro) válido",
-      "mean_us": 12.61,
-      "p50_us": 11.53,
-      "p99_us": 28.09,
-      "sd_us": 11.62
+      "mean_us": 11.79,
+      "p50_us": 11.09,
+      "p99_us": 23.95,
+      "sd_us": 8.73
     },
     {
       "n": 3,
       "task": "Yup validateSyncAt · contêiner (array inteiro) inválido",
-      "mean_us": 20.05,
-      "p50_us": 18.89,
-      "p99_us": 37.78,
-      "sd_us": 10.68
+      "mean_us": 19.7,
+      "p50_us": 18.65,
+      "p99_us": 35.9,
+      "sd_us": 12.46
     },
     {
       "n": 3,
       "task": "Yup validateAt (Promise) · campo raiz inválido",
-      "mean_us": 15.32,
-      "p50_us": 14.42,
-      "p99_us": 29.74,
-      "sd_us": 9.79
+      "mean_us": 16.06,
+      "p50_us": 14.63,
+      "p99_us": 32.3,
+      "sd_us": 34.21
     },
     {
       "n": 3,
       "task": "Zod local · campo raiz válido",
       "mean_us": 0.5,
       "p50_us": 0.47,
-      "p99_us": 0.64,
-      "sd_us": 1.55
+      "p99_us": 0.91,
+      "sd_us": 1.59
     },
     {
       "n": 3,
       "task": "Zod local · campo raiz inválido",
-      "mean_us": 1.81,
-      "p50_us": 1.56,
-      "p99_us": 2.9,
-      "sd_us": 25.3
+      "mean_us": 1.77,
+      "p50_us": 1.55,
+      "p99_us": 2.53,
+      "sd_us": 24.31
     },
     {
       "n": 3,
       "task": "Zod local · primeiro item inválido",
-      "mean_us": 2.05,
-      "p50_us": 1.77,
-      "p99_us": 3.07,
-      "sd_us": 29.5
+      "mean_us": 1.99,
+      "p50_us": 1.71,
+      "p99_us": 2.86,
+      "sd_us": 30.68
     },
     {
       "n": 3,
       "task": "Zod full+filtro · campo raiz inválido",
-      "mean_us": 6.42,
-      "p50_us": 4.89,
-      "p99_us": 15.63,
-      "sd_us": 60.56
+      "mean_us": 6.33,
+      "p50_us": 4.92,
+      "p99_us": 12.18,
+      "sd_us": 63.39
     },
     {
       "n": 3,
       "task": "Zod full+filtro · primeiro item inválido",
-      "mean_us": 6.38,
-      "p50_us": 5.11,
-      "p99_us": 12.99,
-      "sd_us": 58.76
+      "mean_us": 6.04,
+      "p50_us": 4.92,
+      "p99_us": 9.52,
+      "sd_us": 55.11
     },
     {
       "n": 3,
       "task": "Zod full+filtro · regra entre campos inválida",
-      "mean_us": 6.66,
-      "p50_us": 5.28,
-      "p99_us": 15.06,
-      "sd_us": 60.7
+      "mean_us": 6.41,
+      "p50_us": 5.18,
+      "p99_us": 11.93,
+      "sd_us": 57.33
     },
     {
       "n": 3,
       "task": "Yup validateSync · formulário inteiro inválido",
-      "mean_us": 121.93,
-      "p50_us": 111.27,
-      "p99_us": 275.37,
-      "sd_us": 68.46
+      "mean_us": 110.8,
+      "p50_us": 106.1,
+      "p99_us": 169.94,
+      "sd_us": 30.9
     },
     {
       "n": 3,
       "task": "Yup validateSync · formulário inteiro válido",
-      "mean_us": 22.79,
-      "p50_us": 20.88,
-      "p99_us": 50.34,
-      "sd_us": 17.19
+      "mean_us": 21.16,
+      "p50_us": 19.94,
+      "p99_us": 36.42,
+      "sd_us": 13.35
     },
     {
       "n": 3,
       "task": "Zod safeParse · formulário inteiro inválido",
-      "mean_us": 4.14,
-      "p50_us": 2.92,
-      "p99_us": 7.6,
-      "sd_us": 64.66
+      "mean_us": 3.87,
+      "p50_us": 2.81,
+      "p99_us": 6.99,
+      "sd_us": 60.32
     },
     {
       "n": 3,
       "task": "Zod safeParse · formulário inteiro válido",
-      "mean_us": 1.81,
-      "p50_us": 1.66,
-      "p99_us": 3.42,
-      "sd_us": 4.55
+      "mean_us": 1.68,
+      "p50_us": 1.56,
+      "p99_us": 2.7,
+      "sd_us": 10.31
     },
     {
       "n": 3,
       "task": "Remoção do item do meio · árvore + splice (Immer)",
-      "mean_us": 3.94,
-      "p50_us": 3.57,
-      "p99_us": 9.31,
-      "sd_us": 5.64
+      "mean_us": 3.93,
+      "p50_us": 3.65,
+      "p99_us": 7.34,
+      "sd_us": 5.11
     },
     {
       "n": 3,
       "task": "Remoção do item do meio · mapa plano + renumeração",
-      "mean_us": 0.99,
-      "p50_us": 0.91,
-      "p99_us": 1.82,
-      "sd_us": 1.78
+      "mean_us": 0.97,
+      "p50_us": 0.93,
+      "p99_us": 1.75,
+      "sd_us": 2.06
     },
     {
       "n": 30,
       "task": "Yup validateSyncAt · campo raiz válido",
-      "mean_us": 1.17,
-      "p50_us": 1.06,
-      "p99_us": 2.15,
-      "sd_us": 3.16
+      "mean_us": 1.06,
+      "p50_us": 0.99,
+      "p99_us": 1.57,
+      "sd_us": 2.81
     },
     {
       "n": 30,
       "task": "Yup validateSyncAt · campo raiz inválido",
-      "mean_us": 14.69,
-      "p50_us": 13.66,
-      "p99_us": 32.16,
-      "sd_us": 26.68
+      "mean_us": 13.21,
+      "p50_us": 12.48,
+      "p99_us": 25.43,
+      "sd_us": 9.51
     },
     {
       "n": 30,
       "task": "Yup validateSyncAt · primeiro item inválido",
-      "mean_us": 15.1,
-      "p50_us": 14.25,
-      "p99_us": 31.57,
-      "sd_us": 8.17
+      "mean_us": 13.51,
+      "p50_us": 12.94,
+      "p99_us": 25.01,
+      "sd_us": 8.29
     },
     {
       "n": 30,
       "task": "Yup validateSyncAt · último item inválido",
-      "mean_us": 14.87,
-      "p50_us": 13.8,
-      "p99_us": 35.24,
-      "sd_us": 10.81
+      "mean_us": 13.51,
+      "p50_us": 13.11,
+      "p99_us": 24.54,
+      "sd_us": 5.54
     },
     {
       "n": 30,
       "task": "Yup validateSyncAt · regra entre campos inválida",
-      "mean_us": 15.29,
-      "p50_us": 14.37,
-      "p99_us": 32.63,
-      "sd_us": 8.6
+      "mean_us": 14.13,
+      "p50_us": 13.51,
+      "p99_us": 26.12,
+      "sd_us": 9.81
     },
     {
       "n": 30,
       "task": "Yup validateSyncAt · contêiner (array inteiro) válido",
-      "mean_us": 111.35,
-      "p50_us": 101.33,
-      "p99_us": 275.63,
-      "sd_us": 83.97
+      "mean_us": 101.11,
+      "p50_us": 94.64,
+      "p99_us": 273.77,
+      "sd_us": 32.75
     },
     {
       "n": 30,
       "task": "Yup validateSyncAt · contêiner (array inteiro) inválido",
-      "mean_us": 46.75,
-      "p50_us": 43.09,
-      "p99_us": 107.85,
-      "sd_us": 20.83
+      "mean_us": 43.84,
+      "p50_us": 41.9,
+      "p99_us": 67.55,
+      "sd_us": 16.33
     },
     {
       "n": 30,
       "task": "Yup validateAt (Promise) · campo raiz inválido",
-      "mean_us": 16.13,
-      "p50_us": 14.96,
-      "p99_us": 35.7,
-      "sd_us": 8.96
+      "mean_us": 15.02,
+      "p50_us": 14.51,
+      "p99_us": 26.23,
+      "sd_us": 7.07
     },
     {
       "n": 30,
       "task": "Zod local · campo raiz válido",
-      "mean_us": 0.53,
-      "p50_us": 0.48,
-      "p99_us": 0.96,
-      "sd_us": 3
+      "mean_us": 0.48,
+      "p50_us": 0.47,
+      "p99_us": 0.59,
+      "sd_us": 1.57
     },
     {
       "n": 30,
       "task": "Zod local · campo raiz inválido",
-      "mean_us": 2.04,
-      "p50_us": 1.67,
-      "p99_us": 4.06,
-      "sd_us": 28.49
+      "mean_us": 1.87,
+      "p50_us": 1.59,
+      "p99_us": 2.71,
+      "sd_us": 29.29
     },
     {
       "n": 30,
       "task": "Zod local · primeiro item inválido",
-      "mean_us": 2.33,
-      "p50_us": 1.85,
-      "p99_us": 5.33,
-      "sd_us": 34.54
+      "mean_us": 2.01,
+      "p50_us": 1.74,
+      "p99_us": 2.99,
+      "sd_us": 27.91
     },
     {
       "n": 30,
       "task": "Zod full+filtro · campo raiz inválido",
-      "mean_us": 26.89,
-      "p50_us": 20.25,
-      "p99_us": 56.27,
-      "sd_us": 139.98
+      "mean_us": 23.47,
+      "p50_us": 18.41,
+      "p99_us": 39.71,
+      "sd_us": 122.31
     },
     {
       "n": 30,
       "task": "Zod full+filtro · primeiro item inválido",
-      "mean_us": 26.81,
-      "p50_us": 20.41,
-      "p99_us": 72.62,
-      "sd_us": 131.83
+      "mean_us": 24.04,
+      "p50_us": 18.33,
+      "p99_us": 44.02,
+      "sd_us": 123.32
     },
     {
       "n": 30,
       "task": "Zod full+filtro · regra entre campos inválida",
-      "mean_us": 27.64,
-      "p50_us": 21.52,
-      "p99_us": 55.85,
-      "sd_us": 125.62
+      "mean_us": 25.93,
+      "p50_us": 20.15,
+      "p99_us": 46.23,
+      "sd_us": 122.15
     },
     {
       "n": 30,
       "task": "Yup validateSync · formulário inteiro inválido",
-      "mean_us": 516.82,
-      "p50_us": 486.38,
-      "p99_us": 945.5,
-      "sd_us": 146.31
+      "mean_us": 485.69,
+      "p50_us": 461.96,
+      "p99_us": 935.25,
+      "sd_us": 112.18
     },
     {
       "n": 30,
       "task": "Yup validateSync · formulário inteiro válido",
-      "mean_us": 119.04,
-      "p50_us": 108.3,
-      "p99_us": 314.23,
-      "sd_us": 84.63
+      "mean_us": 111.02,
+      "p50_us": 104.81,
+      "p99_us": 261.7,
+      "sd_us": 31.8
     },
     {
       "n": 30,
       "task": "Zod safeParse · formulário inteiro inválido",
-      "mean_us": 18.49,
-      "p50_us": 13.4,
-      "p99_us": 35.63,
-      "sd_us": 124.23
+      "mean_us": 17.04,
+      "p50_us": 12.57,
+      "p99_us": 29.13,
+      "sd_us": 115.82
     },
     {
       "n": 30,
       "task": "Zod safeParse · formulário inteiro válido",
-      "mean_us": 8.49,
-      "p50_us": 7.83,
-      "p99_us": 19.21,
-      "sd_us": 17.34
+      "mean_us": 7.55,
+      "p50_us": 7.04,
+      "p99_us": 14.94,
+      "sd_us": 18.42
     },
     {
       "n": 30,
       "task": "Remoção do item do meio · árvore + splice (Immer)",
-      "mean_us": 15.97,
-      "p50_us": 15.16,
-      "p99_us": 31.71,
-      "sd_us": 9.26
+      "mean_us": 14.95,
+      "p50_us": 14.32,
+      "p99_us": 27.22,
+      "sd_us": 9.31
     },
     {
       "n": 30,
       "task": "Remoção do item do meio · mapa plano + renumeração",
-      "mean_us": 6.99,
-      "p50_us": 6.5,
-      "p99_us": 17.26,
-      "sd_us": 6.24
+      "mean_us": 6.8,
+      "p50_us": 6.58,
+      "p99_us": 10.54,
+      "sd_us": 5.2
     },
     {
       "n": 300,
       "task": "Yup validateSyncAt · campo raiz válido",
-      "mean_us": 1.19,
-      "p50_us": 1.05,
-      "p99_us": 2.32,
-      "sd_us": 8.11
+      "mean_us": 1.09,
+      "p50_us": 1.02,
+      "p99_us": 1.62,
+      "sd_us": 2.63
     },
     {
       "n": 300,
       "task": "Yup validateSyncAt · campo raiz inválido",
-      "mean_us": 15.17,
-      "p50_us": 14.01,
-      "p99_us": 37.9,
-      "sd_us": 10.68
+      "mean_us": 13.1,
+      "p50_us": 12.55,
+      "p99_us": 23.97,
+      "sd_us": 8.36
     },
     {
       "n": 300,
       "task": "Yup validateSyncAt · primeiro item inválido",
-      "mean_us": 15.26,
-      "p50_us": 14.29,
-      "p99_us": 33.55,
+      "mean_us": 13.56,
+      "p50_us": 12.92,
+      "p99_us": 25.64,
       "sd_us": 9.22
     },
     {
       "n": 300,
       "task": "Yup validateSyncAt · último item inválido",
-      "mean_us": 16.6,
-      "p50_us": 14.5,
-      "p99_us": 43.1,
-      "sd_us": 17.46
+      "mean_us": 13.77,
+      "p50_us": 13.18,
+      "p99_us": 26.53,
+      "sd_us": 7.06
     },
     {
       "n": 300,
       "task": "Yup validateSyncAt · regra entre campos inválida",
-      "mean_us": 16.3,
-      "p50_us": 14.99,
-      "p99_us": 37.65,
-      "sd_us": 10.61
+      "mean_us": 13.98,
+      "p50_us": 13.32,
+      "p99_us": 25.58,
+      "sd_us": 10.01
     },
     {
       "n": 300,
       "task": "Yup validateSyncAt · contêiner (array inteiro) válido",
-      "mean_us": 1163.62,
-      "p50_us": 1093.04,
-      "p99_us": 2098.48,
-      "sd_us": 231.24
+      "mean_us": 1014.12,
+      "p50_us": 984.69,
+      "p99_us": 1541.82,
+      "sd_us": 124.29
     },
     {
       "n": 300,
       "task": "Yup validateSyncAt · contêiner (array inteiro) inválido",
-      "mean_us": 334.19,
-      "p50_us": 314.84,
-      "p99_us": 688.52,
-      "sd_us": 77.03
+      "mean_us": 283.83,
+      "p50_us": 274.67,
+      "p99_us": 472.24,
+      "sd_us": 42.56
     },
     {
       "n": 300,
       "task": "Yup validateAt (Promise) · campo raiz inválido",
-      "mean_us": 16.23,
-      "p50_us": 15.19,
-      "p99_us": 31.96,
-      "sd_us": 10.73
+      "mean_us": 15.36,
+      "p50_us": 14.57,
+      "p99_us": 28.42,
+      "sd_us": 11.85
     },
     {
       "n": 300,
       "task": "Zod local · campo raiz válido",
-      "mean_us": 0.52,
-      "p50_us": 0.49,
-      "p99_us": 0.83,
-      "sd_us": 1.47
+      "mean_us": 0.48,
+      "p50_us": 0.45,
+      "p99_us": 0.69,
+      "sd_us": 1.64
     },
     {
       "n": 300,
       "task": "Zod local · campo raiz inválido",
-      "mean_us": 2,
-      "p50_us": 1.68,
-      "p99_us": 4.57,
-      "sd_us": 25.26
+      "mean_us": 1.87,
+      "p50_us": 1.57,
+      "p99_us": 3.02,
+      "sd_us": 28.4
     },
     {
       "n": 300,
       "task": "Zod local · primeiro item inválido",
-      "mean_us": 2.21,
-      "p50_us": 1.87,
-      "p99_us": 4.62,
-      "sd_us": 32.37
+      "mean_us": 2.06,
+      "p50_us": 1.74,
+      "p99_us": 2.76,
+      "sd_us": 34.69
     },
     {
       "n": 300,
       "task": "Zod full+filtro · campo raiz inválido",
-      "mean_us": 222.4,
-      "p50_us": 174.45,
-      "p99_us": 2720.92,
-      "sd_us": 374.22
+      "mean_us": 203.07,
+      "p50_us": 151.32,
+      "p99_us": 2867.73,
+      "sd_us": 396.88
     },
     {
       "n": 300,
       "task": "Zod full+filtro · primeiro item inválido",
-      "mean_us": 225.26,
-      "p50_us": 177.12,
-      "p99_us": 2811.24,
-      "sd_us": 362.67
+      "mean_us": 200.26,
+      "p50_us": 150.89,
+      "p99_us": 2468.95,
+      "sd_us": 375.38
     },
     {
       "n": 300,
       "task": "Zod full+filtro · regra entre campos inválida",
-      "mean_us": 236.66,
-      "p50_us": 190.39,
-      "p99_us": 3095.6,
-      "sd_us": 351.79
+      "mean_us": 219.71,
+      "p50_us": 169.4,
+      "p99_us": 3021.65,
+      "sd_us": 369.63
     },
     {
       "n": 300,
       "task": "Yup validateSync · formulário inteiro inválido",
-      "mean_us": 4819.33,
-      "p50_us": 4545.04,
-      "p99_us": 7223.98,
-      "sd_us": 762.69
+      "mean_us": 4276.51,
+      "p50_us": 4102.39,
+      "p99_us": 6147.19,
+      "sd_us": 479.87
     },
     {
       "n": 300,
       "task": "Yup validateSync · formulário inteiro válido",
-      "mean_us": 1080.61,
-      "p50_us": 1033.95,
-      "p99_us": 1670.35,
-      "sd_us": 163.95
+      "mean_us": 976.22,
+      "p50_us": 936.18,
+      "p99_us": 1556.12,
+      "sd_us": 114.37
     },
     {
       "n": 300,
       "task": "Zod safeParse · formulário inteiro inválido",
-      "mean_us": 167.92,
-      "p50_us": 124.3,
-      "p99_us": 507.97,
-      "sd_us": 365.09
+      "mean_us": 155.12,
+      "p50_us": 110.05,
+      "p99_us": 745.27,
+      "sd_us": 403.02
     },
     {
       "n": 300,
       "task": "Zod safeParse · formulário inteiro válido",
-      "mean_us": 74.37,
-      "p50_us": 69.64,
-      "p99_us": 143.29,
-      "sd_us": 44.16
+      "mean_us": 64.18,
+      "p50_us": 61.22,
+      "p99_us": 104.56,
+      "sd_us": 48.11
     },
     {
       "n": 300,
       "task": "Remoção do item do meio · árvore + splice (Immer)",
-      "mean_us": 141.72,
-      "p50_us": 135.9,
-      "p99_us": 227.68,
-      "sd_us": 32.02
+      "mean_us": 128.31,
+      "p50_us": 122.48,
+      "p99_us": 242.23,
+      "sd_us": 26.47
     },
     {
       "n": 300,
       "task": "Remoção do item do meio · mapa plano + renumeração",
-      "mean_us": 64.34,
-      "p50_us": 61.28,
-      "p99_us": 129.6,
-      "sd_us": 23.52
+      "mean_us": 59.01,
+      "p50_us": 56.47,
+      "p99_us": 101.46,
+      "sd_us": 20.06
     },
     {
       "n": 3,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, primeiro sócio, inválida",
-      "mean_us": 24.23,
-      "p50_us": 22.6,
-      "p99_us": 55.62,
-      "sd_us": 14.18
+      "mean_us": 21.68,
+      "p50_us": 20.58,
+      "p99_us": 38.07,
+      "sd_us": 11.84
     },
     {
       "n": 3,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, último sócio, inválida",
-      "mean_us": 24.24,
-      "p50_us": 22.43,
-      "p99_us": 58.46,
-      "sd_us": 15.66
+      "mean_us": 21.87,
+      "p50_us": 20.74,
+      "p99_us": 38.81,
+      "sd_us": 11.48
     },
     {
       "n": 3,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, válida",
-      "mean_us": 10.3,
-      "p50_us": 9.39,
-      "p99_us": 23.38,
-      "sd_us": 10.11
+      "mean_us": 9.55,
+      "p50_us": 9.1,
+      "p99_us": 18.44,
+      "sd_us": 6.93
     },
     {
       "n": 3,
       "task": "Complexo · validateSyncAt · campo com when (CNPJ), válido",
-      "mean_us": 4.22,
-      "p50_us": 3.78,
-      "p99_us": 8.61,
-      "sd_us": 7.14
+      "mean_us": 3.7,
+      "p50_us": 3.54,
+      "p99_us": 5.08,
+      "sd_us": 4.15
     },
     {
       "n": 3,
       "task": "Complexo · validateSyncAt · regra da lista (soma 100%), inválida",
-      "mean_us": 47.66,
-      "p50_us": 43.45,
-      "p99_us": 124.74,
-      "sd_us": 25.98
+      "mean_us": 43.57,
+      "p50_us": 42.06,
+      "p99_us": 63.31,
+      "sd_us": 13.76
     },
     {
       "n": 3,
       "task": "Complexo · validateSync · formulário inteiro inválido",
-      "mean_us": 401.3,
-      "p50_us": 377.37,
-      "p99_us": 867.36,
-      "sd_us": 93.09
+      "mean_us": 357.87,
+      "p50_us": 343.12,
+      "p99_us": 625.84,
+      "sd_us": 53.57
     },
     {
       "n": 3,
       "task": "Complexo · validateSync · formulário inteiro válido",
-      "mean_us": 242.69,
-      "p50_us": 227.34,
-      "p99_us": 554.38,
-      "sd_us": 58.95
+      "mean_us": 224.59,
+      "p50_us": 212.04,
+      "p99_us": 446.55,
+      "sd_us": 59.21
     },
     {
       "n": 30,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, primeiro sócio, inválida",
-      "mean_us": 23.39,
-      "p50_us": 21.87,
-      "p99_us": 50.4,
-      "sd_us": 13.2
+      "mean_us": 21.44,
+      "p50_us": 20.59,
+      "p99_us": 36.07,
+      "sd_us": 8.53
     },
     {
       "n": 30,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, último sócio, inválida",
-      "mean_us": 23.78,
-      "p50_us": 21.85,
-      "p99_us": 52.98,
-      "sd_us": 12.92
+      "mean_us": 21.8,
+      "p50_us": 20.69,
+      "p99_us": 37.48,
+      "sd_us": 13.61
     },
     {
       "n": 30,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, válida",
-      "mean_us": 10.44,
-      "p50_us": 9.7,
-      "p99_us": 23.42,
-      "sd_us": 8.41
+      "mean_us": 9.4,
+      "p50_us": 9.04,
+      "p99_us": 17.27,
+      "sd_us": 5.29
     },
     {
       "n": 30,
       "task": "Complexo · validateSyncAt · campo com when (CNPJ), válido",
-      "mean_us": 4.06,
-      "p50_us": 3.74,
-      "p99_us": 7.97,
-      "sd_us": 5.35
+      "mean_us": 3.69,
+      "p50_us": 3.49,
+      "p99_us": 6.8,
+      "sd_us": 4.4
     },
     {
       "n": 30,
       "task": "Complexo · validateSyncAt · regra da lista (soma 100%), inválida",
-      "mean_us": 288.07,
-      "p50_us": 271.02,
-      "p99_us": 606.58,
-      "sd_us": 58.88
+      "mean_us": 274.26,
+      "p50_us": 262.41,
+      "p99_us": 500.6,
+      "sd_us": 43.9
     },
     {
       "n": 30,
       "task": "Complexo · validateSync · formulário inteiro inválido",
-      "mean_us": 2550.98,
-      "p50_us": 2458.08,
-      "p99_us": 3899.13,
-      "sd_us": 296.28
+      "mean_us": 2350.97,
+      "p50_us": 2292.47,
+      "p99_us": 2899.67,
+      "sd_us": 181.4
     },
     {
       "n": 30,
       "task": "Complexo · validateSync · formulário inteiro válido",
-      "mean_us": 1177.54,
-      "p50_us": 1133.17,
-      "p99_us": 1739.2,
-      "sd_us": 146.1
+      "mean_us": 1101.8,
+      "p50_us": 1069.16,
+      "p99_us": 1627.72,
+      "sd_us": 119.94
     },
     {
       "n": 300,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, primeiro sócio, inválida",
-      "mean_us": 22.82,
-      "p50_us": 21.62,
-      "p99_us": 43.43,
-      "sd_us": 10.49
+      "mean_us": 21.51,
+      "p50_us": 20.69,
+      "p99_us": 36.4,
+      "sd_us": 7.96
     },
     {
       "n": 300,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, último sócio, inválida",
-      "mean_us": 23.47,
-      "p50_us": 21.91,
-      "p99_us": 46.87,
-      "sd_us": 13.5
+      "mean_us": 21.75,
+      "p50_us": 20.72,
+      "p99_us": 35.52,
+      "sd_us": 12.22
     },
     {
       "n": 300,
       "task": "Complexo · validateSyncAt · folha a 4 níveis, válida",
-      "mean_us": 10.13,
-      "p50_us": 9.44,
-      "p99_us": 22.03,
-      "sd_us": 8.76
+      "mean_us": 9.62,
+      "p50_us": 9.25,
+      "p99_us": 18.62,
+      "sd_us": 5.59
     },
     {
       "n": 300,
       "task": "Complexo · validateSyncAt · campo com when (CNPJ), válido",
-      "mean_us": 3.96,
-      "p50_us": 3.66,
-      "p99_us": 7.88,
-      "sd_us": 4.88
+      "mean_us": 3.74,
+      "p50_us": 3.54,
+      "p99_us": 6.79,
+      "sd_us": 4.42
     },
     {
       "n": 300,
       "task": "Complexo · validateSyncAt · regra da lista (soma 100%), inválida",
-      "mean_us": 2588.52,
-      "p50_us": 2532.09,
-      "p99_us": 3449.31,
-      "sd_us": 252.13
+      "mean_us": 2475.62,
+      "p50_us": 2442.72,
+      "p99_us": 2959.55,
+      "sd_us": 130.85
     },
     {
       "n": 300,
       "task": "Complexo · validateSync · formulário inteiro inválido",
-      "mean_us": 23806.39,
-      "p50_us": 23722.24,
-      "p99_us": 25581.98,
-      "sd_us": 760.49
+      "mean_us": 22497.85,
+      "p50_us": 22452.05,
+      "p99_us": 24519,
+      "sd_us": 682.51
     },
     {
       "n": 300,
       "task": "Complexo · validateSync · formulário inteiro válido",
-      "mean_us": 10327.24,
-      "p50_us": 10272.44,
-      "p99_us": 12496.64,
-      "sd_us": 585.36
+      "mean_us": 9667.99,
+      "p50_us": 9511.29,
+      "p99_us": 11173.51,
+      "sd_us": 469.71
     }
   ],
   "sanity": {

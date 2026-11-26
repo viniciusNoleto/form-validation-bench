@@ -3,6 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { h, nextTick } from 'vue';
 import PrimeVue from 'primevue/config';
 import * as yup from 'yup';
+import { plugin as formKit, defaultConfig as formKitConfig } from '@formkit/vue';
 import { stats } from './stats';
 import { RUN, shuffled, writeRun } from '../shared/runs.mjs';
 
@@ -19,6 +20,8 @@ const make = (n: number) => yup.object(Object.fromEntries(Array.from({ length: n
   : yup.string().required('obrigatório').default('')])));
 const SCHEMAS: Record<number, yup.ObjectSchema<any>> = { 20: make(20), 100: make(100), 500: make(500) };
 const global = { plugins: [[PrimeVue, { unstyled: true }]] as any };
+// O FormKit precisa do próprio plugin; só os formulários FormKit o recebem.
+const globalFor = (v: Variant) => (v.key === 'FK' ? { plugins: [...global.plugins, [formKit, formKitConfig()]] as any } : global);
 const TEXT = 'fulano.de.tal@exemplo.com';
 const LONG = 'fulano.de.tal.da.silva.sauro@exemplo-de-dominio.com.br';
 const flush = async () => { await flushPromises(); await nextTick(); };
@@ -40,7 +43,13 @@ const VARIANTS: Variant[] = [
   V('WV', 'WV · wrapper por tipo declarado num v-for'),
   V('FV', 'FV · frame num v-for, o slot usa a variável do laço'),
   V('FVN', 'FVN · frame num v-for, o slot não usa a variável do laço'),
-];
+  V('WA', 'WA · wrapper, assíncrono, gravação única (sem limpar)'),
+  V('OP', 'OP · observador do formulário com um watch por caminho (sem cópia); o campo só valida no blur'),
+  // Bibliotecas (benchmarks/vue/libs.ts): o mesmo esquema Yup, do jeito que cada documentação recomenda.
+  V('VV', 'VV · VeeValidate 4 (useForm com validationSchema, useField por campo)'),
+  V('VLD', 'VLD · Vuelidate 2 ($autoDirty, regra por campo que valida o caminho no esquema)'),
+  V('FK', 'FK · FormKit 2 (inputs FormKit, regra por campo que valida o caminho no esquema, atraso padrão de 20 ms)'),
+].filter((v) => !process.env.BENCH_ONLY || process.env.BENCH_ONLY.split(',').includes(v.key));
 const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
 
 /**
@@ -50,7 +59,7 @@ const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
  */
 async function type(v: Variant, text: string, intervalMs: number, n = 20) {
   fake();
-  const w = mount({ render: () => h(form(v.key, n), { schema: SCHEMAS[n] }) }, { attachTo: document.body, global });
+  const w = mount({ render: () => h(form(v.key, n), { schema: SCHEMAS[n] }) }, { attachTo: document.body, global: globalFor(v) });
   await flush(); stats.reset();
   const input = w.find('input[aria-label="f0"]');
   let ms = 0;
@@ -70,21 +79,26 @@ async function type(v: Variant, text: string, intervalMs: number, n = 20) {
   ms += performance.now() - t1;
   await input.trigger('blur'); await vi.advanceTimersByTimeAsync(300); await flush();
   expect(w.find('[role=alert]').exists()).toBe(false);
-  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length };
+  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, whole: stats.whole, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length };
   await input.setValue(''); await vi.advanceTimersByTimeAsync(300); await flush();
   if (v.validates) expect(w.find('[role=alert]').text()).toBe('obrigatório');
-  w.unmount(); vi.useRealTimers();
+  w.unmount();
+  // validações assíncronas pendentes (bibliotecas) terminam aqui, antes da próxima tarefa zerar as contagens
+  await vi.advanceTimersByTimeAsync(1000); await flush();
+  vi.useRealTimers();
   return out;
 }
 type Run = Awaited<ReturnType<typeof type>>;
 
 async function mountMs(v: Variant) {
   const t0 = performance.now();
-  const w = mount({ render: () => h(form(v.key, 500), { schema: SCHEMAS[500] }) }, { global });
+  const w = mount({ render: () => h(form(v.key, 500), { schema: SCHEMAS[500] }) }, { global: globalFor(v) });
   await nextTick();
   const ms = performance.now() - t0;
   expect(w.findAll('input')).toHaveLength(500);
   w.unmount();
+  // validações que a biblioteca agendou na montagem (relógio real) terminam aqui, fora da próxima tarefa
+  await new Promise((r) => setTimeout(r, 100)); await flushPromises();
   return ms;
 }
 
@@ -92,9 +106,9 @@ const REPS = Number(process.env.BENCH_REPS ?? 15);
 const round = (x: number) => +x.toFixed(1);
 /** Contagens das repetições precisam ser idênticas: o roteiro é determinístico. */
 function counts(xs: Run[]) {
-  for (const k of ['updates', 'formUpdates', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
-  const { updates, formUpdates, validations, flickers } = xs[0];
-  return { updates, formUpdates, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
+  for (const k of ['updates', 'formUpdates', 'validations', 'whole', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
+  const { updates, formUpdates, validations, whole, flickers } = xs[0];
+  return { updates, formUpdates, validations, whole, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
 }
 
 it('Vue: estrutura do campo, gravação do erro, debounce, montagem e escala', async () => {
@@ -103,13 +117,13 @@ it('Vue: estrutura do campo, gravação do erro, debounce, montagem e escala', a
   // Contagens com 25 teclas (seção 8.3).
   for (const v of VARIANTS) {
     const [slow, fast] = [await type(v, TEXT, 250), await type(v, TEXT, 60)];
-    const c = ({ updates, formUpdates, validations, flickers }: Run) => ({ updates, formUpdates, validations, flickers });
+    const c = ({ updates, formUpdates, validations, whole, flickers }: Run) => ({ updates, formUpdates, validations, whole, flickers });
     variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
   // Escala: as células com 100 e 500 campos entram no MESMO sorteio das variantes (um bloco só);
   // a célula com 20 campos é a própria medição da variante (54 teclas, 250 ms).
-  const SCALE = ['H', 'W', 'O'];
+  const SCALE = ['H', 'W', 'O', 'OP', 'VV', 'VLD', 'FK'].filter((k) => byKey[k]);
   const cells = SCALE.flatMap((key) => [100, 500].map((n) => ({ key, n })));
 
   // Aquecimento da digitação, da montagem e das células de escala.

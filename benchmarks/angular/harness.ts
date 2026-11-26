@@ -1,8 +1,8 @@
 import { expect, vi } from 'vitest';
-import { TestBed, type ComponentFixture } from '@angular/core/testing';
+import { TestBed, getTestBed, type ComponentFixture } from '@angular/core/testing';
 import * as yup from 'yup';
 import { BenchForm } from './BenchForm';
-import { clearThenSetForm, clearThenSetSyncForm, finalForm, noValidationForm, observerForm, withKind, type BenchForm as BenchFormApi } from './forms';
+import { clearThenSetForm, clearThenSetSyncForm, finalForm, formlyForm, noValidationForm, observerForm, reactiveForm, signalForms, withKind, type BenchForm as BenchFormApi } from './forms';
 import { stats } from './stats';
 
 // Mesmo roteiro dos benchmarks React e Vue: e-mail inválido até o último caractere, depois blur.
@@ -24,9 +24,26 @@ export const VARIANTS: Variant[] = [
   V('F', 'F · frame genérico + injeção de dependência, validação no evento', withKind('frame')),
   V('WN', 'WN · wrapper que observa o próprio valor (effect), em vez de validar no evento', withKind('effect')),
   V('O', 'O · observador do formulário (effect sobre o signal); o campo só valida no blur', observerForm),
-];
+  // Bibliotecas (benchmarks/angular/libs.ts): o mesmo esquema Yup, do jeito que cada documentação recomenda.
+  V('RF', 'RF · Reactive Forms (FormControl por campo, validador que valida o caminho no esquema)', reactiveForm),
+  V('SF', 'SF · Signal Forms (validateStandardSchema com o esquema do formulário, [formField])', signalForms),
+  V('FLY', 'FLY · ngx-formly 11 (tipo de campo próprio, validador por campo que valida o caminho no esquema)', formlyForm),
+].filter((v) => { const only = (globalThis as any).process?.env?.BENCH_ONLY as string | undefined; return !only || only.split(',').includes(v.key); });
 
 const flickers = (t: (string | null)[]) => { let n = 0; for (let i = 2; i < t.length; i++) if (t[i - 2] && t[i - 1] === null && t[i] === t[i - 2]) n++; return n; };
+
+/**
+ * Destrói a fixture e a tira da lista de fixtures ativas do TestBed. O TestBed guarda toda fixture
+ * criada até o fim do teste, mesmo destruída; com centenas de formulários por sessão, isso retém
+ * memória até esgotar o heap (o ngx-formly com 500 campos, por exemplo). A lista é interna
+ * (_activeFixtures), daí o acesso direto.
+ */
+function release(fixture: ComponentFixture<unknown>) {
+  fixture.destroy();
+  const active: ComponentFixture<unknown>[] = (getTestBed() as any)._activeFixtures ?? [];
+  const i = active.indexOf(fixture);
+  if (i >= 0) active.splice(i, 1);
+}
 
 function create(variant: Variant, n: number) {
   const schema = SCHEMAS[n];
@@ -79,12 +96,14 @@ export async function type(variant: Variant, text: string, intervalMs: number, n
   input.dispatchEvent(new Event('blur'));
   await tick(fixture, 300);
   expect(root.querySelector('[role=alert]')).toBeNull();
-  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length };
+  const out = { updates: stats.updates, formUpdates: stats.formUpdates, validations: stats.validations, whole: stats.whole, flickers: flickers(stats.trail), usPerKey: (ms * 1000) / text.length, keyUsPerKey: (keyMs * 1000) / text.length };
   input.value = '';
   input.dispatchEvent(new Event('input'));
   await tick(fixture, 300);
   if (variant.validates) expect(root.querySelector('[role=alert]')?.textContent).toBe('obrigatório');
-  fixture.destroy();
+  release(fixture);
+  // validações assíncronas pendentes (bibliotecas) terminam aqui, antes da próxima tarefa zerar as contagens
+  await vi.advanceTimersByTimeAsync(1000);
   vi.useRealTimers();
   return out;
 }
@@ -95,6 +114,8 @@ export async function mountMs(variant: Variant) {
   await fixture.whenStable();
   const ms = performance.now() - t0;
   expect((fixture.nativeElement as HTMLElement).querySelectorAll('input')).toHaveLength(500);
-  fixture.destroy();
+  release(fixture);
+  // validações que a biblioteca agendou na montagem (relógio real) terminam aqui, fora da próxima tarefa
+  await new Promise((r) => setTimeout(r, 100));
   return ms;
 }

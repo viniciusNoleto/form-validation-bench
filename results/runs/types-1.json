@@ -1,11 +1,20 @@
 {
   "meta": {
     "run": 1,
-    "date": "2026-11-25T14:12:11.564Z",
+    "date": "2026-11-26T00:23:49.302Z",
     "node": "v24.21.0",
     "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "cpus": 20,
+    "memGB": 10.7,
+    "distro": "Ubuntu 22.04.5 LTS",
     "platform": "linux 6.18.58.1-microsoft-standard-WSL2",
-    "order": "bench:schema,bench:types,bench:react,bench:vue,bench:angular"
+    "order": "bench:schema,bench:types,bench:react,bench:vue,bench:angular",
+    "revision": {
+      "commit": "b761bd46e3a1ae72836069bcee22d5d3129c7d15",
+      "dirty": true,
+      "sourceHash": "1b8817c6c4a60418deb8103bba890bb33055ad3f31a1b77b78b86d089cae2c1c",
+      "files": 192
+    }
   },
   "method": "tinybench, 200 ms por tarefa, 50 ms de aquecimento; latência por chamada",
   "results": [
@@ -20,11 +29,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.085,
-      "p50_us": 0.941,
-      "p99_us": 2.131,
-      "sd_us": 9.395,
-      "samples": 184311
+      "mean_us": 0.955,
+      "p50_us": 0.889,
+      "p99_us": 1.541,
+      "sd_us": 4.283,
+      "samples": 209339
     },
     {
       "name": "Zod · string/required · válido · -",
@@ -37,11 +46,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.203,
-      "p50_us": 0.176,
-      "p99_us": 0.395,
-      "sd_us": 1.539,
-      "samples": 984516
+      "mean_us": 0.175,
+      "p50_us": 0.163,
+      "p99_us": 0.304,
+      "sd_us": 0.925,
+      "samples": 1140997
     },
     {
       "name": "Yup · string/required · inválido · only",
@@ -54,11 +63,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 14.273,
-      "p50_us": 13.257,
-      "p99_us": 32.367,
-      "sd_us": 10.568,
-      "samples": 14013
+      "mean_us": 12.804,
+      "p50_us": 12.118,
+      "p99_us": 24.204,
+      "sd_us": 10.674,
+      "samples": 15620
     },
     {
       "name": "Zod · string/required · inválido · only",
@@ -71,11 +80,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.653,
-      "p50_us": 1.387,
-      "p99_us": 2.98,
-      "sd_us": 23.232,
-      "samples": 120956
+      "mean_us": 1.536,
+      "p50_us": 1.337,
+      "p99_us": 2.469,
+      "sd_us": 22.944,
+      "samples": 130191
     },
     {
       "name": "Yup · string/trim-required-min-max · válido · -",
@@ -88,11 +97,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.477,
-      "p50_us": 1.256,
-      "p99_us": 2.979,
-      "sd_us": 11.96,
-      "samples": 135411
+      "mean_us": 1.243,
+      "p50_us": 1.14,
+      "p99_us": 1.855,
+      "sd_us": 11.987,
+      "samples": 160960
     },
     {
       "name": "Zod · string/trim-required-min-max · válido · -",
@@ -105,11 +114,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.325,
-      "p50_us": 0.294,
-      "p99_us": 0.624,
-      "sd_us": 1.735,
-      "samples": 615626
+      "mean_us": 0.285,
+      "p50_us": 0.271,
+      "p99_us": 0.415,
+      "sd_us": 1.125,
+      "samples": 700897
     },
     {
       "name": "Yup · string/trim-required-min-max · inválido · first",
@@ -122,11 +131,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 15.143,
-      "p50_us": 13.728,
-      "p99_us": 38.505,
-      "sd_us": 12.652,
-      "samples": 13208
+      "mean_us": 13.155,
+      "p50_us": 12.613,
+      "p99_us": 24.907,
+      "sd_us": 8.35,
+      "samples": 15204
     },
     {
       "name": "Zod · string/trim-required-min-max · inválido · first",
@@ -139,11 +148,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "first",
-      "mean_us": 2.239,
-      "p50_us": 1.815,
-      "p99_us": 3.913,
-      "sd_us": 35.141,
-      "samples": 89340
+      "mean_us": 1.976,
+      "p50_us": 1.687,
+      "p99_us": 2.843,
+      "sd_us": 27.091,
+      "samples": 101195
     },
     {
       "name": "Yup · string/trim-required-min-max · inválido · middle",
@@ -156,11 +165,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "middle",
-      "mean_us": 15.016,
-      "p50_us": 13.794,
-      "p99_us": 39.801,
-      "sd_us": 20.046,
-      "samples": 13320
+      "mean_us": 13.119,
+      "p50_us": 12.466,
+      "p99_us": 25.119,
+      "sd_us": 14.264,
+      "samples": 15245
     },
     {
       "name": "Zod · string/trim-required-min-max · inválido · middle",
@@ -173,11 +182,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "middle",
-      "mean_us": 1.81,
-      "p50_us": 1.6,
-      "p99_us": 3.149,
-      "sd_us": 20.174,
-      "samples": 110477
+      "mean_us": 1.706,
+      "p50_us": 1.461,
+      "p99_us": 2.443,
+      "sd_us": 25.377,
+      "samples": 117261
     },
     {
       "name": "Yup · string/trim-required-min-max · inválido · last",
@@ -190,11 +199,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 15.232,
-      "p50_us": 14.086,
-      "p99_us": 34.655,
-      "sd_us": 27.726,
-      "samples": 13131
+      "mean_us": 13.252,
+      "p50_us": 12.699,
+      "p99_us": 24.428,
+      "sd_us": 21.426,
+      "samples": 15093
     },
     {
       "name": "Zod · string/trim-required-min-max · inválido · last",
@@ -207,11 +216,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.832,
-      "p50_us": 1.551,
-      "p99_us": 3.471,
-      "sd_us": 25.053,
-      "samples": 109166
+      "mean_us": 1.655,
+      "p50_us": 1.477,
+      "p99_us": 2.479,
+      "sd_us": 19.176,
+      "samples": 120833
     },
     {
       "name": "Yup · string/name-5 · válido · -",
@@ -224,11 +233,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.731,
-      "p50_us": 1.461,
-      "p99_us": 3.637,
-      "sd_us": 13.747,
-      "samples": 115522
+      "mean_us": 1.536,
+      "p50_us": 1.39,
+      "p99_us": 2.57,
+      "sd_us": 10.759,
+      "samples": 130218
     },
     {
       "name": "Zod · string/name-5 · válido · -",
@@ -241,11 +250,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.508,
-      "p50_us": 0.462,
-      "p99_us": 1.008,
-      "sd_us": 1.868,
-      "samples": 393507
+      "mean_us": 0.443,
+      "p50_us": 0.406,
+      "p99_us": 0.848,
+      "sd_us": 1.623,
+      "samples": 451901
     },
     {
       "name": "Yup · string/name-5 · inválido · first",
@@ -258,11 +267,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 14.111,
-      "p50_us": 13.005,
-      "p99_us": 34.677,
-      "sd_us": 12.013,
-      "samples": 14174
+      "mean_us": 12.684,
+      "p50_us": 12.288,
+      "p99_us": 23.754,
+      "sd_us": 3.947,
+      "samples": 15768
     },
     {
       "name": "Zod · string/name-5 · inválido · first",
@@ -275,11 +284,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "first",
-      "mean_us": 3.423,
-      "p50_us": 2.668,
-      "p99_us": 7.861,
-      "sd_us": 40.254,
-      "samples": 58429
+      "mean_us": 2.885,
+      "p50_us": 2.482,
+      "p99_us": 4.753,
+      "sd_us": 35.386,
+      "samples": 69322
     },
     {
       "name": "Yup · string/name-5 · inválido · middle",
@@ -292,11 +301,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "middle",
-      "mean_us": 14.88,
-      "p50_us": 13.971,
-      "p99_us": 30.423,
-      "sd_us": 20.506,
-      "samples": 13442
+      "mean_us": 13.875,
+      "p50_us": 12.614,
+      "p99_us": 24.69,
+      "sd_us": 43.039,
+      "samples": 14415
     },
     {
       "name": "Zod · string/name-5 · inválido · middle",
@@ -309,11 +318,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "middle",
-      "mean_us": 2.244,
-      "p50_us": 2.003,
-      "p99_us": 4.253,
-      "sd_us": 23.44,
-      "samples": 89127
+      "mean_us": 2.083,
+      "p50_us": 1.85,
+      "p99_us": 3.278,
+      "sd_us": 23.21,
+      "samples": 96002
     },
     {
       "name": "Yup · string/name-5 · inválido · last",
@@ -326,11 +335,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.917,
-      "p50_us": 13.788,
-      "p99_us": 33.553,
-      "sd_us": 28.216,
-      "samples": 13409
+      "mean_us": 13.703,
+      "p50_us": 12.779,
+      "p99_us": 25.016,
+      "sd_us": 32.772,
+      "samples": 14596
     },
     {
       "name": "Zod · string/name-5 · inválido · last",
@@ -343,11 +352,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 2.062,
-      "p50_us": 1.761,
-      "p99_us": 3.273,
-      "sd_us": 25.179,
-      "samples": 96982
+      "mean_us": 1.783,
+      "p50_us": 1.624,
+      "p99_us": 2.603,
+      "sd_us": 16.964,
+      "samples": 112184
     },
     {
       "name": "Yup · string/email · válido · -",
@@ -360,11 +369,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.302,
-      "p50_us": 1.172,
-      "p99_us": 2.319,
-      "sd_us": 5.372,
-      "samples": 153606
+      "mean_us": 1.219,
+      "p50_us": 1.123,
+      "p99_us": 1.972,
+      "sd_us": 8.404,
+      "samples": 164103
     },
     {
       "name": "Zod · string/email · válido · -",
@@ -377,11 +386,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.341,
-      "p50_us": 0.322,
-      "p99_us": 0.497,
-      "sd_us": 1.087,
-      "samples": 585884
+      "mean_us": 0.325,
+      "p50_us": 0.301,
+      "p99_us": 0.618,
+      "sd_us": 0.805,
+      "samples": 614649
     },
     {
       "name": "Yup · string/email · inválido · first",
@@ -394,11 +403,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 14.063,
-      "p50_us": 12.551,
-      "p99_us": 34.381,
-      "sd_us": 14.225,
-      "samples": 14222
+      "mean_us": 12.673,
+      "p50_us": 12.25,
+      "p99_us": 23.471,
+      "sd_us": 9.195,
+      "samples": 15782
     },
     {
       "name": "Zod · string/email · inválido · first",
@@ -411,11 +420,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "first",
-      "mean_us": 1.716,
-      "p50_us": 1.457,
-      "p99_us": 2.844,
-      "sd_us": 26.658,
-      "samples": 116567
+      "mean_us": 1.596,
+      "p50_us": 1.369,
+      "p99_us": 2.196,
+      "sd_us": 24.994,
+      "samples": 125292
     },
     {
       "name": "Yup · string/email · inválido · last",
@@ -428,11 +437,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.708,
-      "p50_us": 13.803,
-      "p99_us": 30.277,
-      "sd_us": 31.235,
-      "samples": 13599
+      "mean_us": 12.947,
+      "p50_us": 12.42,
+      "p99_us": 24.115,
+      "sd_us": 15.734,
+      "samples": 15448
     },
     {
       "name": "Zod · string/email · inválido · last",
@@ -445,11 +454,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 2.235,
-      "p50_us": 1.837,
-      "p99_us": 5.428,
-      "sd_us": 30.496,
-      "samples": 89484
+      "mean_us": 1.991,
+      "p50_us": 1.784,
+      "p99_us": 2.835,
+      "sd_us": 24.185,
+      "samples": 100450
     },
     {
       "name": "Yup · string/url · válido · -",
@@ -462,11 +471,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.277,
-      "p50_us": 1.185,
-      "p99_us": 2.127,
-      "sd_us": 3.395,
-      "samples": 156658
+      "mean_us": 1.218,
+      "p50_us": 1.145,
+      "p99_us": 1.793,
+      "sd_us": 8.803,
+      "samples": 164155
     },
     {
       "name": "Zod · string/url · válido · -",
@@ -479,11 +488,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.288,
-      "p50_us": 0.262,
-      "p99_us": 0.5,
-      "sd_us": 1.236,
-      "samples": 693426
+      "mean_us": 0.277,
+      "p50_us": 0.259,
+      "p99_us": 0.383,
+      "sd_us": 2.725,
+      "samples": 722791
     },
     {
       "name": "Yup · string/url · inválido · only",
@@ -496,11 +505,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 13.623,
-      "p50_us": 12.767,
-      "p99_us": 28.798,
-      "sd_us": 10.668,
-      "samples": 14681
+      "mean_us": 12.722,
+      "p50_us": 12.395,
+      "p99_us": 22.831,
+      "sd_us": 5.468,
+      "samples": 15721
     },
     {
       "name": "Zod · string/url · inválido · only",
@@ -513,11 +522,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.582,
-      "p50_us": 1.371,
-      "p99_us": 2.526,
-      "sd_us": 21.133,
-      "samples": 126389
+      "mean_us": 1.577,
+      "p50_us": 1.332,
+      "p99_us": 2.287,
+      "sd_us": 26.208,
+      "samples": 128333
     },
     {
       "name": "Yup · string/uuid · válido · -",
@@ -530,11 +539,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.027,
-      "p50_us": 0.93,
-      "p99_us": 1.724,
-      "sd_us": 7.343,
-      "samples": 194777
+      "mean_us": 0.95,
+      "p50_us": 0.891,
+      "p99_us": 1.405,
+      "sd_us": 4.569,
+      "samples": 210621
     },
     {
       "name": "Zod · string/uuid · válido · -",
@@ -547,11 +556,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.239,
-      "p50_us": 0.216,
-      "p99_us": 0.42,
-      "sd_us": 1.318,
-      "samples": 838185
+      "mean_us": 0.228,
+      "p50_us": 0.213,
+      "p99_us": 0.343,
+      "sd_us": 1.405,
+      "samples": 876603
     },
     {
       "name": "Yup · string/uuid · inválido · only",
@@ -564,11 +573,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 13.147,
-      "p50_us": 12.556,
-      "p99_us": 26.21,
-      "sd_us": 5.067,
-      "samples": 15213
+      "mean_us": 12.972,
+      "p50_us": 12.075,
+      "p99_us": 24.425,
+      "sd_us": 37.698,
+      "samples": 15418
     },
     {
       "name": "Zod · string/uuid · inválido · only",
@@ -581,11 +590,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.856,
-      "p50_us": 1.605,
-      "p99_us": 3.12,
-      "sd_us": 21.297,
-      "samples": 107775
+      "mean_us": 1.872,
+      "p50_us": 1.607,
+      "p99_us": 2.636,
+      "sd_us": 30.581,
+      "samples": 106818
     },
     {
       "name": "Yup · string/oneOf · válido · -",
@@ -598,11 +607,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.162,
-      "p50_us": 1.054,
-      "p99_us": 1.979,
-      "sd_us": 6.897,
-      "samples": 172053
+      "mean_us": 1.099,
+      "p50_us": 1.007,
+      "p99_us": 1.728,
+      "sd_us": 9.17,
+      "samples": 182055
     },
     {
       "name": "Zod · string/oneOf · válido · -",
@@ -615,11 +624,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.139,
-      "p50_us": 0.122,
-      "p99_us": 0.274,
-      "sd_us": 1.151,
-      "samples": 1443396
+      "mean_us": 0.125,
+      "p50_us": 0.109,
+      "p99_us": 0.252,
+      "sd_us": 1.205,
+      "samples": 1598923
     },
     {
       "name": "Yup · string/oneOf · inválido · last",
@@ -632,11 +641,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.928,
-      "p50_us": 13.723,
-      "p99_us": 34.71,
-      "sd_us": 21.052,
-      "samples": 13398
+      "mean_us": 14.059,
+      "p50_us": 13.499,
+      "p99_us": 26.811,
+      "sd_us": 8.834,
+      "samples": 14226
     },
     {
       "name": "Zod · string/oneOf · inválido · last",
@@ -649,11 +658,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.497,
-      "p50_us": 1.181,
-      "p99_us": 2.624,
-      "sd_us": 27.631,
-      "samples": 133578
+      "mean_us": 1.351,
+      "p50_us": 1.186,
+      "p99_us": 2.07,
+      "sd_us": 20.58,
+      "samples": 148080
     },
     {
       "name": "Yup · string/cep-mask · válido · -",
@@ -666,11 +675,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.112,
-      "p50_us": 0.951,
-      "p99_us": 2.125,
-      "sd_us": 8.102,
-      "samples": 179812
+      "mean_us": 1.032,
+      "p50_us": 0.914,
+      "p99_us": 1.628,
+      "sd_us": 10.765,
+      "samples": 193778
     },
     {
       "name": "Zod · string/cep-mask · válido · -",
@@ -683,11 +692,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.325,
-      "p50_us": 0.271,
-      "p99_us": 0.712,
-      "sd_us": 1.908,
-      "samples": 616014
+      "mean_us": 0.287,
+      "p50_us": 0.266,
+      "p99_us": 0.455,
+      "sd_us": 1.123,
+      "samples": 696844
     },
     {
       "name": "Yup · string/cep-mask · inválido · only",
@@ -700,11 +709,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 13.155,
-      "p50_us": 12.256,
-      "p99_us": 27.453,
-      "sd_us": 11.769,
-      "samples": 15204
+      "mean_us": 12.511,
+      "p50_us": 11.987,
+      "p99_us": 24.717,
+      "sd_us": 5.618,
+      "samples": 15987
     },
     {
       "name": "Zod · string/cep-mask · inválido · only",
@@ -717,11 +726,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 2.07,
-      "p50_us": 1.668,
-      "p99_us": 3.631,
-      "sd_us": 31.025,
-      "samples": 96617
+      "mean_us": 1.943,
+      "p50_us": 1.671,
+      "p99_us": 2.808,
+      "sd_us": 26.865,
+      "samples": 103502
     },
     {
       "name": "Yup · string/confirm-ref · válido · -",
@@ -734,11 +743,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.201,
-      "p50_us": 1.042,
-      "p99_us": 2.198,
-      "sd_us": 8.439,
-      "samples": 166587
+      "mean_us": 1.069,
+      "p50_us": 1.007,
+      "p99_us": 1.624,
+      "sd_us": 4.793,
+      "samples": 187085
     },
     {
       "name": "Zod · string/confirm-ref · válido · -",
@@ -751,11 +760,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.21,
-      "p50_us": 0.189,
-      "p99_us": 0.361,
-      "sd_us": 1.3,
-      "samples": 950226
+      "mean_us": 0.189,
+      "p50_us": 0.179,
+      "p99_us": 0.28,
+      "sd_us": 1.187,
+      "samples": 1055490
     },
     {
       "name": "Yup · string/confirm-ref · inválido · last",
@@ -768,11 +777,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.411,
-      "p50_us": 13.36,
-      "p99_us": 29.878,
-      "sd_us": 12.152,
-      "samples": 13879
+      "mean_us": 13.876,
+      "p50_us": 13.256,
+      "p99_us": 25.645,
+      "sd_us": 13.113,
+      "samples": 14414
     },
     {
       "name": "Zod · string/confirm-ref · inválido · last",
@@ -785,11 +794,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.859,
-      "p50_us": 1.527,
-      "p99_us": 2.93,
-      "sd_us": 27.971,
-      "samples": 107591
+      "mean_us": 1.712,
+      "p50_us": 1.474,
+      "p99_us": 2.517,
+      "sd_us": 26.654,
+      "samples": 116843
     },
     {
       "name": "Yup · string/when · válido · -",
@@ -802,11 +811,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 5.152,
-      "p50_us": 4.713,
-      "p99_us": 10.116,
-      "sd_us": 9.02,
-      "samples": 38819
+      "mean_us": 4.659,
+      "p50_us": 4.345,
+      "p99_us": 7.783,
+      "sd_us": 19.149,
+      "samples": 42924
     },
     {
       "name": "Zod · string/when · válido · -",
@@ -819,11 +828,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.184,
-      "p50_us": 0.162,
-      "p99_us": 0.355,
-      "sd_us": 1.125,
-      "samples": 1085064
+      "mean_us": 0.176,
+      "p50_us": 0.16,
+      "p99_us": 0.293,
+      "sd_us": 1.353,
+      "samples": 1137453
     },
     {
       "name": "Yup · string/when · inválido · first",
@@ -836,11 +845,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 18.19,
-      "p50_us": 16.215,
-      "p99_us": 40.699,
-      "sd_us": 21.015,
-      "samples": 10996
+      "mean_us": 17.275,
+      "p50_us": 16.009,
+      "p99_us": 33.947,
+      "sd_us": 23.336,
+      "samples": 11578
     },
     {
       "name": "Zod · string/when · inválido · first",
@@ -853,11 +862,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "inválido",
       "at": "first",
-      "mean_us": 1.722,
-      "p50_us": 1.42,
-      "p99_us": 3.284,
-      "sd_us": 28.91,
-      "samples": 116128
+      "mean_us": 1.6,
+      "p50_us": 1.358,
+      "p99_us": 2.432,
+      "sd_us": 24.477,
+      "samples": 124999
     },
     {
       "name": "Yup · string/when · inválido · last",
@@ -870,11 +879,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 19.552,
-      "p50_us": 17.651,
-      "p99_us": 38.362,
-      "sd_us": 65.18,
-      "samples": 10229
+      "mean_us": 16.925,
+      "p50_us": 15.9,
+      "p99_us": 31.277,
+      "sd_us": 19.565,
+      "samples": 11817
     },
     {
       "name": "Zod · string/when · inválido · last",
@@ -887,11 +896,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.64,
-      "p50_us": 1.465,
-      "p99_us": 2.52,
-      "sd_us": 18.838,
-      "samples": 121933
+      "mean_us": 1.585,
+      "p50_us": 1.395,
+      "p99_us": 2.5,
+      "sd_us": 19.511,
+      "samples": 126163
     },
     {
       "name": "Yup · number/nullable-required · válido · -",
@@ -904,11 +913,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 0.94,
-      "p50_us": 0.838,
-      "p99_us": 1.751,
-      "sd_us": 8.858,
-      "samples": 212678
+      "mean_us": 0.869,
+      "p50_us": 0.791,
+      "p99_us": 1.543,
+      "sd_us": 6.898,
+      "samples": 230056
     },
     {
       "name": "Zod · number/nullable-required · válido · -",
@@ -921,11 +930,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.203,
-      "p50_us": 0.172,
-      "p99_us": 0.38,
-      "sd_us": 2.721,
-      "samples": 982918
+      "mean_us": 0.176,
+      "p50_us": 0.162,
+      "p99_us": 0.304,
+      "sd_us": 1.294,
+      "samples": 1137394
     },
     {
       "name": "Yup · number/nullable-required · inválido · only",
@@ -938,11 +947,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 13.68,
-      "p50_us": 12.537,
-      "p99_us": 31.409,
-      "sd_us": 12.295,
-      "samples": 14621
+      "mean_us": 12.414,
+      "p50_us": 11.981,
+      "p99_us": 22.923,
+      "sd_us": 8.872,
+      "samples": 16111
     },
     {
       "name": "Zod · number/nullable-required · inválido · only",
@@ -955,11 +964,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.644,
-      "p50_us": 1.376,
-      "p99_us": 2.935,
-      "sd_us": 24.756,
-      "samples": 121658
+      "mean_us": 1.549,
+      "p50_us": 1.287,
+      "p99_us": 2.306,
+      "sd_us": 28.709,
+      "samples": 129109
     },
     {
       "name": "Yup · number/min-max · válido · -",
@@ -972,11 +981,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.166,
-      "p50_us": 1.044,
-      "p99_us": 2.035,
-      "sd_us": 9.372,
-      "samples": 171528
+      "mean_us": 1.089,
+      "p50_us": 0.988,
+      "p99_us": 1.707,
+      "sd_us": 11.664,
+      "samples": 183611
     },
     {
       "name": "Zod · number/min-max · válido · -",
@@ -989,11 +998,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.209,
-      "p50_us": 0.19,
-      "p99_us": 0.36,
-      "sd_us": 3.144,
-      "samples": 957015
+      "mean_us": 0.19,
+      "p50_us": 0.176,
+      "p99_us": 0.331,
+      "sd_us": 0.758,
+      "samples": 1055339
     },
     {
       "name": "Yup · number/min-max · inválido · middle",
@@ -1006,11 +1015,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "middle",
-      "mean_us": 13.771,
-      "p50_us": 12.833,
-      "p99_us": 31.477,
-      "sd_us": 13.747,
-      "samples": 14524
+      "mean_us": 12.706,
+      "p50_us": 12.182,
+      "p99_us": 23.887,
+      "sd_us": 14.348,
+      "samples": 15741
     },
     {
       "name": "Zod · number/min-max · inválido · middle",
@@ -1023,11 +1032,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "middle",
-      "mean_us": 1.665,
-      "p50_us": 1.403,
-      "p99_us": 3.103,
-      "sd_us": 23.021,
-      "samples": 120130
+      "mean_us": 1.571,
+      "p50_us": 1.345,
+      "p99_us": 2.423,
+      "sd_us": 25.112,
+      "samples": 127325
     },
     {
       "name": "Yup · number/min-max · inválido · last",
@@ -1040,11 +1049,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.001,
-      "p50_us": 12.8,
-      "p99_us": 31.778,
-      "sd_us": 23.102,
-      "samples": 14285
+      "mean_us": 13.37,
+      "p50_us": 12.388,
+      "p99_us": 25.622,
+      "sd_us": 36.246,
+      "samples": 14959
     },
     {
       "name": "Zod · number/min-max · inválido · last",
@@ -1057,11 +1066,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.623,
-      "p50_us": 1.402,
-      "p99_us": 2.843,
-      "sd_us": 19.167,
-      "samples": 123213
+      "mean_us": 1.482,
+      "p50_us": 1.336,
+      "p99_us": 2.509,
+      "sd_us": 12.96,
+      "samples": 134995
     },
     {
       "name": "Yup · number/int-positive-5 · válido · -",
@@ -1074,11 +1083,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.289,
-      "p50_us": 1.11,
-      "p99_us": 2.492,
-      "sd_us": 9.336,
-      "samples": 155288
+      "mean_us": 1.14,
+      "p50_us": 1.051,
+      "p99_us": 1.7,
+      "sd_us": 9.265,
+      "samples": 175465
     },
     {
       "name": "Zod · number/int-positive-5 · válido · -",
@@ -1091,11 +1100,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.276,
-      "p50_us": 0.251,
-      "p99_us": 0.526,
-      "sd_us": 1.158,
-      "samples": 723388
+      "mean_us": 0.241,
+      "p50_us": 0.229,
+      "p99_us": 0.357,
+      "sd_us": 0.869,
+      "samples": 831401
     },
     {
       "name": "Yup · number/int-positive-5 · inválido · first",
@@ -1108,11 +1117,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 14.481,
-      "p50_us": 13.486,
-      "p99_us": 32.884,
-      "sd_us": 9.498,
-      "samples": 13811
+      "mean_us": 13.132,
+      "p50_us": 12.425,
+      "p99_us": 26.279,
+      "sd_us": 12.055,
+      "samples": 15231
     },
     {
       "name": "Zod · number/int-positive-5 · inválido · first",
@@ -1125,11 +1134,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "first",
-      "mean_us": 1.557,
-      "p50_us": 1.329,
-      "p99_us": 2.792,
-      "sd_us": 22.199,
-      "samples": 128449
+      "mean_us": 1.463,
+      "p50_us": 1.255,
+      "p99_us": 2.018,
+      "sd_us": 25.966,
+      "samples": 136739
     },
     {
       "name": "Yup · number/int-positive-5 · inválido · middle",
@@ -1142,11 +1151,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "middle",
-      "mean_us": 14.504,
-      "p50_us": 13.343,
-      "p99_us": 30.466,
-      "sd_us": 20.901,
-      "samples": 13790
+      "mean_us": 13.116,
+      "p50_us": 12.21,
+      "p99_us": 23.672,
+      "sd_us": 42.765,
+      "samples": 15250
     },
     {
       "name": "Zod · number/int-positive-5 · inválido · middle",
@@ -1159,11 +1168,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "middle",
-      "mean_us": 1.699,
-      "p50_us": 1.409,
-      "p99_us": 2.774,
-      "sd_us": 27.173,
-      "samples": 117691
+      "mean_us": 1.561,
+      "p50_us": 1.313,
+      "p99_us": 2.281,
+      "sd_us": 26.274,
+      "samples": 128095
     },
     {
       "name": "Yup · number/int-positive-5 · inválido · last",
@@ -1176,11 +1185,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.279,
-      "p50_us": 13.475,
-      "p99_us": 28.218,
-      "sd_us": 24.94,
-      "samples": 14007
+      "mean_us": 13.068,
+      "p50_us": 12.236,
+      "p99_us": 23.954,
+      "sd_us": 29.874,
+      "samples": 15305
     },
     {
       "name": "Zod · number/int-positive-5 · inválido · last",
@@ -1193,11 +1202,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.753,
-      "p50_us": 1.518,
-      "p99_us": 3.407,
-      "sd_us": 21.867,
-      "samples": 114067
+      "mean_us": 1.615,
+      "p50_us": 1.406,
+      "p99_us": 2.33,
+      "sd_us": 21.876,
+      "samples": 123841
     },
     {
       "name": "Yup · number/moreThan-ref · válido · -",
@@ -1210,11 +1219,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.094,
-      "p50_us": 0.984,
-      "p99_us": 1.98,
-      "sd_us": 8.689,
-      "samples": 182828
+      "mean_us": 0.969,
+      "p50_us": 0.884,
+      "p99_us": 1.497,
+      "sd_us": 5.392,
+      "samples": 206489
     },
     {
       "name": "Zod · number/moreThan-ref · válido · -",
@@ -1227,11 +1236,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.135,
+      "mean_us": 0.138,
       "p50_us": 0.126,
-      "p99_us": 0.214,
-      "sd_us": 0.768,
-      "samples": 1479734
+      "p99_us": 0.246,
+      "sd_us": 0.911,
+      "samples": 1452920
     },
     {
       "name": "Yup · number/moreThan-ref · inválido · last",
@@ -1244,11 +1253,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.386,
-      "p50_us": 13.277,
-      "p99_us": 32.271,
-      "sd_us": 21.696,
-      "samples": 13903
+      "mean_us": 13.093,
+      "p50_us": 12.41,
+      "p99_us": 24.516,
+      "sd_us": 16.39,
+      "samples": 15276
     },
     {
       "name": "Zod · number/moreThan-ref · inválido · last",
@@ -1261,11 +1270,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.687,
-      "p50_us": 1.486,
-      "p99_us": 2.959,
-      "sd_us": 18.916,
-      "samples": 118538
+      "mean_us": 1.579,
+      "p50_us": 1.397,
+      "p99_us": 2.353,
+      "sd_us": 21.691,
+      "samples": 126633
     },
     {
       "name": "Yup · boolean/required · válido · -",
@@ -1278,11 +1287,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 0.947,
-      "p50_us": 0.859,
-      "p99_us": 1.913,
-      "sd_us": 4.684,
-      "samples": 211190
+      "mean_us": 0.868,
+      "p50_us": 0.806,
+      "p99_us": 1.347,
+      "sd_us": 6.32,
+      "samples": 230523
     },
     {
       "name": "Zod · boolean/required · válido · -",
@@ -1295,11 +1304,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.136,
-      "p50_us": 0.113,
-      "p99_us": 0.289,
-      "sd_us": 1.803,
-      "samples": 1466017
+      "mean_us": 0.112,
+      "p50_us": 0.102,
+      "p99_us": 0.206,
+      "sd_us": 0.769,
+      "samples": 1791309
     },
     {
       "name": "Yup · boolean/required · inválido · only",
@@ -1312,11 +1321,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 13.917,
-      "p50_us": 12.893,
-      "p99_us": 31.834,
-      "sd_us": 15.695,
-      "samples": 14371
+      "mean_us": 12.873,
+      "p50_us": 12.175,
+      "p99_us": 23.57,
+      "sd_us": 36.605,
+      "samples": 15537
     },
     {
       "name": "Zod · boolean/required · inválido · only",
@@ -1329,11 +1338,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.635,
-      "p50_us": 1.286,
-      "p99_us": 3.815,
-      "sd_us": 20.027,
-      "samples": 122347
+      "mean_us": 1.346,
+      "p50_us": 1.172,
+      "p99_us": 2.088,
+      "sd_us": 21.7,
+      "samples": 148641
     },
     {
       "name": "Yup · boolean/accept · válido · -",
@@ -1346,11 +1355,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.117,
-      "p50_us": 0.997,
-      "p99_us": 2.084,
-      "sd_us": 7.539,
-      "samples": 178987
+      "mean_us": 0.997,
+      "p50_us": 0.918,
+      "p99_us": 1.564,
+      "sd_us": 7.811,
+      "samples": 200535
     },
     {
       "name": "Zod · boolean/accept · válido · -",
@@ -1363,11 +1372,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.192,
-      "p50_us": 0.166,
-      "p99_us": 0.342,
-      "sd_us": 1.807,
-      "samples": 1040001
+      "mean_us": 0.171,
+      "p50_us": 0.151,
+      "p99_us": 0.333,
+      "sd_us": 2.429,
+      "samples": 1169615
     },
     {
       "name": "Yup · boolean/accept · inválido · last",
@@ -1380,11 +1389,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 15.2,
-      "p50_us": 13.777,
-      "p99_us": 35.807,
-      "sd_us": 15.379,
-      "samples": 13158
+      "mean_us": 13.643,
+      "p50_us": 13.054,
+      "p99_us": 24.841,
+      "sd_us": 15.983,
+      "samples": 14660
     },
     {
       "name": "Zod · boolean/accept · inválido · last",
@@ -1397,11 +1406,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.643,
-      "p50_us": 1.367,
-      "p99_us": 4.142,
-      "sd_us": 24.557,
-      "samples": 122109
+      "mean_us": 1.516,
+      "p50_us": 1.305,
+      "p99_us": 2.302,
+      "sd_us": 22.848,
+      "samples": 133864
     },
     {
       "name": "Yup · date/required · válido · -",
@@ -1414,11 +1423,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.002,
-      "p50_us": 0.912,
-      "p99_us": 1.973,
-      "sd_us": 5.529,
-      "samples": 199508
+      "mean_us": 0.892,
+      "p50_us": 0.84,
+      "p99_us": 1.337,
+      "sd_us": 2.463,
+      "samples": 224130
     },
     {
       "name": "Zod · date/required · válido · -",
@@ -1431,11 +1440,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.197,
-      "p50_us": 0.175,
-      "p99_us": 0.39,
-      "sd_us": 1.468,
-      "samples": 1013384
+      "mean_us": 0.173,
+      "p50_us": 0.159,
+      "p99_us": 0.3,
+      "sd_us": 1.082,
+      "samples": 1158044
     },
     {
       "name": "Yup · date/required · inválido · only",
@@ -1448,11 +1457,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 13.791,
-      "p50_us": 12.898,
-      "p99_us": 31.766,
-      "sd_us": 12.197,
-      "samples": 14502
+      "mean_us": 12.674,
+      "p50_us": 11.798,
+      "p99_us": 24.712,
+      "sd_us": 17.474,
+      "samples": 15781
     },
     {
       "name": "Zod · date/required · inválido · only",
@@ -1465,11 +1474,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.605,
-      "p50_us": 1.368,
-      "p99_us": 2.72,
-      "sd_us": 24.514,
-      "samples": 124591
+      "mean_us": 1.452,
+      "p50_us": 1.273,
+      "p99_us": 2.396,
+      "sd_us": 20.8,
+      "samples": 138642
     },
     {
       "name": "Yup · date/min-max · válido · -",
@@ -1482,11 +1491,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.398,
-      "p50_us": 1.261,
-      "p99_us": 2.452,
-      "sd_us": 9.419,
-      "samples": 143017
+      "mean_us": 1.244,
+      "p50_us": 1.153,
+      "p99_us": 2.129,
+      "sd_us": 2.759,
+      "samples": 160750
     },
     {
       "name": "Zod · date/min-max · válido · -",
@@ -1499,11 +1508,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.36,
-      "p50_us": 0.333,
-      "p99_us": 0.638,
-      "sd_us": 1.421,
-      "samples": 555959
+      "mean_us": 0.342,
+      "p50_us": 0.305,
+      "p99_us": 0.588,
+      "sd_us": 1.67,
+      "samples": 584355
     },
     {
       "name": "Yup · date/min-max · inválido · middle",
@@ -1516,11 +1525,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "middle",
-      "mean_us": 13.982,
-      "p50_us": 12.726,
-      "p99_us": 32.819,
-      "sd_us": 12.543,
-      "samples": 14305
+      "mean_us": 12.742,
+      "p50_us": 12.187,
+      "p99_us": 23.78,
+      "sd_us": 10.334,
+      "samples": 15696
     },
     {
       "name": "Zod · date/min-max · inválido · middle",
@@ -1533,11 +1542,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "middle",
-      "mean_us": 1.837,
-      "p50_us": 1.585,
-      "p99_us": 3.369,
-      "sd_us": 19.751,
-      "samples": 108868
+      "mean_us": 1.744,
+      "p50_us": 1.501,
+      "p99_us": 2.578,
+      "sd_us": 24.285,
+      "samples": 114689
     },
     {
       "name": "Yup · date/min-max · inválido · last",
@@ -1550,11 +1559,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.074,
-      "p50_us": 13.044,
-      "p99_us": 29.239,
-      "sd_us": 13.965,
-      "samples": 14211
+      "mean_us": 13.287,
+      "p50_us": 12.36,
+      "p99_us": 24.949,
+      "sd_us": 27.97,
+      "samples": 15053
     },
     {
       "name": "Zod · date/min-max · inválido · last",
@@ -1567,11 +1576,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.899,
-      "p50_us": 1.62,
-      "p99_us": 3.182,
-      "sd_us": 25.558,
-      "samples": 105323
+      "mean_us": 1.698,
+      "p50_us": 1.502,
+      "p99_us": 2.462,
+      "sd_us": 21.511,
+      "samples": 117766
     },
     {
       "name": "Yup · date/min-ref · válido · -",
@@ -1584,11 +1593,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.2,
-      "p50_us": 1.05,
-      "p99_us": 2.186,
-      "sd_us": 8.319,
-      "samples": 166724
+      "mean_us": 1.091,
+      "p50_us": 1.017,
+      "p99_us": 1.576,
+      "sd_us": 6.926,
+      "samples": 183358
     },
     {
       "name": "Zod · date/min-ref · válido · -",
@@ -1601,11 +1610,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.224,
-      "p50_us": 0.202,
-      "p99_us": 0.44,
-      "sd_us": 1.001,
-      "samples": 893219
+      "mean_us": 0.199,
+      "p50_us": 0.184,
+      "p99_us": 0.26,
+      "sd_us": 3.262,
+      "samples": 1004581
     },
     {
       "name": "Yup · date/min-ref · inválido · last",
@@ -1618,11 +1627,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 13.89,
-      "p50_us": 12.756,
-      "p99_us": 29.854,
-      "sd_us": 19.252,
-      "samples": 14400
+      "mean_us": 13.205,
+      "p50_us": 12.331,
+      "p99_us": 26.201,
+      "sd_us": 15.475,
+      "samples": 15146
     },
     {
       "name": "Zod · date/min-ref · inválido · last",
@@ -1635,11 +1644,11 @@
       "zodStrategy": "objeto inteiro + filtro",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.84,
-      "p50_us": 1.578,
-      "p99_us": 2.968,
-      "sd_us": 26.462,
-      "samples": 108673
+      "mean_us": 1.638,
+      "p50_us": 1.446,
+      "p99_us": 2.493,
+      "sd_us": 20.533,
+      "samples": 122093
     },
     {
       "name": "Yup · array/min · válido · -",
@@ -1652,11 +1661,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 2.105,
-      "p50_us": 1.86,
-      "p99_us": 4.507,
-      "sd_us": 8.2,
-      "samples": 95023
+      "mean_us": 1.897,
+      "p50_us": 1.719,
+      "p99_us": 3.032,
+      "sd_us": 9.096,
+      "samples": 105451
     },
     {
       "name": "Zod · array/min · válido · -",
@@ -1669,11 +1678,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.222,
-      "p50_us": 0.199,
-      "p99_us": 0.412,
-      "sd_us": 1.463,
-      "samples": 899941
+      "mean_us": 0.192,
+      "p50_us": 0.177,
+      "p99_us": 0.335,
+      "sd_us": 1.172,
+      "samples": 1041652
     },
     {
       "name": "Yup · array/min · inválido · only",
@@ -1686,11 +1695,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 14.306,
-      "p50_us": 12.998,
-      "p99_us": 37.923,
-      "sd_us": 14.066,
-      "samples": 13980
+      "mean_us": 13.114,
+      "p50_us": 12.474,
+      "p99_us": 26.071,
+      "sd_us": 8.428,
+      "samples": 15252
     },
     {
       "name": "Zod · array/min · inválido · only",
@@ -1703,11 +1712,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.619,
-      "p50_us": 1.384,
-      "p99_us": 2.715,
-      "sd_us": 22.892,
-      "samples": 123546
+      "mean_us": 1.501,
+      "p50_us": 1.296,
+      "p99_us": 2.218,
+      "sd_us": 23.863,
+      "samples": 133262
     },
     {
       "name": "Yup · array/min-max-unique · válido · -",
@@ -1720,11 +1729,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 4.518,
-      "p50_us": 4.106,
-      "p99_us": 8.623,
-      "sd_us": 11.741,
-      "samples": 44269
+      "mean_us": 4.351,
+      "p50_us": 3.98,
+      "p99_us": 8.155,
+      "sd_us": 19.015,
+      "samples": 45964
     },
     {
       "name": "Zod · array/min-max-unique · válido · -",
@@ -1737,11 +1746,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.551,
-      "p50_us": 0.507,
-      "p99_us": 1.105,
-      "sd_us": 1.547,
-      "samples": 363094
+      "mean_us": 0.514,
+      "p50_us": 0.472,
+      "p99_us": 0.831,
+      "sd_us": 2.09,
+      "samples": 388765
     },
     {
       "name": "Yup · array/min-max-unique · inválido · first",
@@ -1754,11 +1763,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 14.151,
-      "p50_us": 12.996,
-      "p99_us": 29.534,
-      "sd_us": 11.11,
-      "samples": 14134
+      "mean_us": 13.296,
+      "p50_us": 12.534,
+      "p99_us": 24.695,
+      "sd_us": 10.933,
+      "samples": 15042
     },
     {
       "name": "Zod · array/min-max-unique · inválido · first",
@@ -1771,11 +1780,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "first",
-      "mean_us": 1.781,
-      "p50_us": 1.584,
-      "p99_us": 2.862,
-      "sd_us": 18.884,
-      "samples": 112269
+      "mean_us": 1.715,
+      "p50_us": 1.388,
+      "p99_us": 2.365,
+      "sd_us": 31.269,
+      "samples": 116601
     },
     {
       "name": "Yup · array/min-max-unique · inválido · middle",
@@ -1788,11 +1797,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "middle",
-      "mean_us": 15.776,
-      "p50_us": 14.256,
-      "p99_us": 33.949,
-      "sd_us": 43.521,
-      "samples": 12678
+      "mean_us": 14.425,
+      "p50_us": 13.699,
+      "p99_us": 27.197,
+      "sd_us": 19.009,
+      "samples": 13865
     },
     {
       "name": "Zod · array/min-max-unique · inválido · middle",
@@ -1805,11 +1814,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "middle",
-      "mean_us": 1.749,
-      "p50_us": 1.461,
-      "p99_us": 3.082,
-      "sd_us": 23.532,
-      "samples": 114367
+      "mean_us": 1.633,
+      "p50_us": 1.407,
+      "p99_us": 2.326,
+      "sd_us": 23.309,
+      "samples": 124176
     },
     {
       "name": "Yup · array/min-max-unique · inválido · last",
@@ -1822,11 +1831,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.88,
-      "p50_us": 13.571,
-      "p99_us": 30.958,
-      "sd_us": 36.532,
-      "samples": 13441
+      "mean_us": 14.187,
+      "p50_us": 13.293,
+      "p99_us": 25.669,
+      "sd_us": 27.735,
+      "samples": 14098
     },
     {
       "name": "Zod · array/min-max-unique · inválido · last",
@@ -1839,11 +1848,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.999,
-      "p50_us": 1.678,
-      "p99_us": 3.145,
-      "sd_us": 25.635,
-      "samples": 100056
+      "mean_us": 1.892,
+      "p50_us": 1.652,
+      "p99_us": 2.8,
+      "sd_us": 22.667,
+      "samples": 105708
     },
     {
       "name": "Yup · array/item · válido · -",
@@ -1856,11 +1865,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.63,
-      "p50_us": 1.469,
-      "p99_us": 2.921,
-      "sd_us": 6.966,
-      "samples": 122733
+      "mean_us": 1.521,
+      "p50_us": 1.399,
+      "p99_us": 2.182,
+      "sd_us": 11.162,
+      "samples": 131510
     },
     {
       "name": "Zod · array/item · válido · -",
@@ -1873,11 +1882,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.402,
-      "p50_us": 0.366,
-      "p99_us": 0.725,
-      "sd_us": 1.547,
-      "samples": 497939
+      "mean_us": 0.369,
+      "p50_us": 0.353,
+      "p99_us": 0.494,
+      "sd_us": 0.805,
+      "samples": 542538
     },
     {
       "name": "Yup · array/item · inválido · first",
@@ -1890,11 +1899,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 14.282,
-      "p50_us": 13.335,
-      "p99_us": 28.842,
-      "sd_us": 10.317,
-      "samples": 14004
+      "mean_us": 12.955,
+      "p50_us": 12.419,
+      "p99_us": 23.728,
+      "sd_us": 9.218,
+      "samples": 15445
     },
     {
       "name": "Zod · array/item · inválido · first",
@@ -1907,11 +1916,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "first",
-      "mean_us": 2.12,
-      "p50_us": 1.861,
-      "p99_us": 3.212,
-      "sd_us": 26.587,
-      "samples": 94326
+      "mean_us": 1.975,
+      "p50_us": 1.706,
+      "p99_us": 2.924,
+      "sd_us": 27.127,
+      "samples": 101251
     },
     {
       "name": "Yup · array/item · inválido · last",
@@ -1924,11 +1933,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.333,
-      "p50_us": 13.536,
-      "p99_us": 28.519,
-      "sd_us": 18.813,
-      "samples": 13955
+      "mean_us": 13.635,
+      "p50_us": 12.939,
+      "p99_us": 25.721,
+      "sd_us": 20.299,
+      "samples": 14668
     },
     {
       "name": "Zod · array/item · inválido · last",
@@ -1941,11 +1950,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 1.899,
-      "p50_us": 1.647,
-      "p99_us": 3.241,
-      "sd_us": 23.403,
-      "samples": 105302
+      "mean_us": 1.736,
+      "p50_us": 1.515,
+      "p99_us": 2.585,
+      "sd_us": 23.455,
+      "samples": 115237
     },
     {
       "name": "Yup · object/nested-leaf · válido · -",
@@ -1958,11 +1967,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.402,
-      "p50_us": 1.251,
-      "p99_us": 2.47,
-      "sd_us": 10.022,
-      "samples": 142610
+      "mean_us": 1.257,
+      "p50_us": 1.161,
+      "p99_us": 1.993,
+      "sd_us": 6.551,
+      "samples": 159159
     },
     {
       "name": "Zod · object/nested-leaf · válido · -",
@@ -1975,11 +1984,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.328,
-      "p50_us": 0.299,
-      "p99_us": 0.59,
-      "sd_us": 0.929,
-      "samples": 610449
+      "mean_us": 0.303,
+      "p50_us": 0.29,
+      "p99_us": 0.385,
+      "sd_us": 0.827,
+      "samples": 660225
     },
     {
       "name": "Yup · object/nested-leaf · inválido · first",
@@ -1992,11 +2001,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "first",
-      "mean_us": 13.875,
-      "p50_us": 12.817,
-      "p99_us": 30.784,
-      "sd_us": 14.617,
-      "samples": 14414
+      "mean_us": 12.67,
+      "p50_us": 12.198,
+      "p99_us": 22.456,
+      "sd_us": 13.643,
+      "samples": 15787
     },
     {
       "name": "Zod · object/nested-leaf · inválido · first",
@@ -2009,11 +2018,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "first",
-      "mean_us": 2.447,
-      "p50_us": 2.042,
-      "p99_us": 3.934,
-      "sd_us": 34.468,
-      "samples": 81740
+      "mean_us": 2.171,
+      "p50_us": 1.861,
+      "p99_us": 3.086,
+      "sd_us": 31.722,
+      "samples": 92574
     },
     {
       "name": "Yup · object/nested-leaf · inválido · last",
@@ -2026,11 +2035,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "last",
-      "mean_us": 14.55,
-      "p50_us": 13.572,
-      "p99_us": 30.303,
-      "sd_us": 32.785,
-      "samples": 13747
+      "mean_us": 13.118,
+      "p50_us": 12.463,
+      "p99_us": 24.879,
+      "sd_us": 22.481,
+      "samples": 15246
     },
     {
       "name": "Zod · object/nested-leaf · inválido · last",
@@ -2043,11 +2052,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "last",
-      "mean_us": 2.057,
-      "p50_us": 1.843,
-      "p99_us": 3.234,
-      "sd_us": 21.82,
-      "samples": 97233
+      "mean_us": 1.86,
+      "p50_us": 1.636,
+      "p99_us": 2.734,
+      "sd_us": 24.1,
+      "samples": 107505
     },
     {
       "name": "Yup · object/test · válido · -",
@@ -2060,11 +2069,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 3.417,
-      "p50_us": 2.981,
-      "p99_us": 7.335,
-      "sd_us": 19.397,
-      "samples": 58529
+      "mean_us": 2.972,
+      "p50_us": 2.721,
+      "p99_us": 5.7,
+      "sd_us": 9.869,
+      "samples": 67297
     },
     {
       "name": "Zod · object/test · válido · -",
@@ -2077,11 +2086,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.203,
-      "p50_us": 0.179,
-      "p99_us": 0.398,
-      "sd_us": 1.467,
-      "samples": 985895
+      "mean_us": 0.187,
+      "p50_us": 0.166,
+      "p99_us": 0.346,
+      "sd_us": 3.11,
+      "samples": 1070645
     },
     {
       "name": "Yup · object/test · inválido · only",
@@ -2094,11 +2103,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 14.641,
-      "p50_us": 13.526,
-      "p99_us": 31.75,
-      "sd_us": 15.662,
-      "samples": 13661
+      "mean_us": 13.824,
+      "p50_us": 13.276,
+      "p99_us": 26.383,
+      "sd_us": 7.211,
+      "samples": 14468
     },
     {
       "name": "Zod · object/test · inválido · only",
@@ -2111,11 +2120,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.687,
-      "p50_us": 1.38,
-      "p99_us": 2.984,
-      "sd_us": 26.739,
-      "samples": 118523
+      "mean_us": 1.5,
+      "p50_us": 1.325,
+      "p99_us": 2.246,
+      "sd_us": 20.398,
+      "samples": 134994
     },
     {
       "name": "Yup · mixed/oneOf · válido · -",
@@ -2128,11 +2137,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 1.027,
-      "p50_us": 0.901,
-      "p99_us": 1.933,
-      "sd_us": 9.191,
-      "samples": 194816
+      "mean_us": 0.889,
+      "p50_us": 0.827,
+      "p99_us": 1.496,
+      "sd_us": 4.527,
+      "samples": 225095
     },
     {
       "name": "Zod · mixed/oneOf · válido · -",
@@ -2145,11 +2154,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.174,
-      "p50_us": 0.143,
-      "p99_us": 0.415,
-      "sd_us": 1.2,
-      "samples": 1149600
+      "mean_us": 0.158,
+      "p50_us": 0.133,
+      "p99_us": 0.36,
+      "sd_us": 0.784,
+      "samples": 1264670
     },
     {
       "name": "Yup · mixed/oneOf · inválido · only",
@@ -2162,11 +2171,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 14.496,
-      "p50_us": 13.761,
-      "p99_us": 28.577,
-      "sd_us": 15.843,
-      "samples": 13797
+      "mean_us": 14.138,
+      "p50_us": 13.12,
+      "p99_us": 25.598,
+      "sd_us": 45.848,
+      "samples": 14147
     },
     {
       "name": "Zod · mixed/oneOf · inválido · only",
@@ -2179,11 +2188,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 2.434,
-      "p50_us": 1.939,
-      "p99_us": 4.693,
-      "sd_us": 39.61,
-      "samples": 82165
+      "mean_us": 2.378,
+      "p50_us": 1.843,
+      "p99_us": 3.32,
+      "sd_us": 43.365,
+      "samples": 84110
     },
     {
       "name": "Yup · mixed/test · válido · -",
@@ -2196,11 +2205,11 @@
       "zodStrategy": null,
       "state": "válido",
       "at": "-",
-      "mean_us": 0.918,
-      "p50_us": 0.813,
-      "p99_us": 1.686,
-      "sd_us": 8.407,
-      "samples": 217779
+      "mean_us": 0.848,
+      "p50_us": 0.789,
+      "p99_us": 1.302,
+      "sd_us": 3.647,
+      "samples": 235880
     },
     {
       "name": "Zod · mixed/test · válido · -",
@@ -2213,11 +2222,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "válido",
       "at": "-",
-      "mean_us": 0.18,
-      "p50_us": 0.157,
-      "p99_us": 0.348,
-      "sd_us": 1.312,
-      "samples": 1111242
+      "mean_us": 0.161,
+      "p50_us": 0.148,
+      "p99_us": 0.299,
+      "sd_us": 0.756,
+      "samples": 1240902
     },
     {
       "name": "Yup · mixed/test · inválido · only",
@@ -2230,11 +2239,11 @@
       "zodStrategy": null,
       "state": "inválido",
       "at": "only",
-      "mean_us": 13.495,
-      "p50_us": 12.626,
-      "p99_us": 28.831,
-      "sd_us": 12.81,
-      "samples": 14821
+      "mean_us": 12.403,
+      "p50_us": 11.786,
+      "p99_us": 23.905,
+      "sd_us": 12.834,
+      "samples": 16125
     },
     {
       "name": "Zod · mixed/test · inválido · only",
@@ -2247,11 +2256,11 @@
       "zodStrategy": "sub-esquema local",
       "state": "inválido",
       "at": "only",
-      "mean_us": 1.647,
-      "p50_us": 1.359,
-      "p99_us": 2.538,
-      "sd_us": 28.188,
-      "samples": 121732
+      "mean_us": 1.47,
+      "p50_us": 1.272,
+      "p99_us": 2.531,
+      "sd_us": 21.708,
+      "samples": 136090
     }
   ]
 }

@@ -27,8 +27,20 @@ const VARIANTS = {
   WV: [loop(WV), ['BenchWrap'], 'useFinal', true], // wrapper num v-for
   FV: [loop(FV), ['BenchFrame', 'BenchCore'], 'useFinal', true], // frame num v-for, o slot usa a variável do laço
   FVN: [loop(FVN), ['BenchFrame', 'BenchCore'], 'useFinal', true], // frame num v-for, o slot não usa a variável do laço
+  WA: [wrap('BenchWrap', ' :validate="validate"'), ['BenchWrap'], 'useAsyncOnce'], // assíncrono, gravação única (sem limpar)
+  OP: [wrap('BenchWrapBlur', ' :validate="validate"'), ['BenchWrapBlur'], 'usePathObserver'], // observador com um watch por caminho
 };
-const SIZES = { H: [20, 100, 500], W: [20, 100, 500], O: [20, 100, 500] };
+// Bibliotecas (benchmarks/vue/libs.ts): [linha de cada campo, componentes, imports, corpo do setup]
+const LIBS = {
+  VV: [(i) => `    <BenchVee name="f${i}" />`, ['BenchVee'], [`import { useForm } from 'vee-validate';`, `import { counted } from '../libs';`],
+    'useForm({ validationSchema: counted(props.schema), initialValues: props.schema.getDefault() });'],
+  VLD: [(i) => `    <BenchVld v-model="state.f${i}" name="f${i}" :field="v$.f${i}" />`, ['BenchVld'],
+    [`import { reactive } from 'vue';`, `import { useVuelidate } from '@vuelidate/core';`, `import { vuelidateRules } from '../libs';`],
+    'const state = reactive(props.schema.getDefault());\n  const v$ = useVuelidate(vuelidateRules(props.schema, state), state, { $autoDirty: true });'],
+  FK: [(i) => `    <BenchFK name="f${i}" :form="form" :rule="rule('f${i}')" :message="message('f${i}')" />`, ['BenchFK'], [`import { formKitForm } from '../libs';`],
+    'const { form, rule, message } = formKitForm(props.schema);'],
+};
+const SIZES = { H: [20, 100, 500], W: [20, 100, 500], O: [20, 100, 500], OP: [20, 100, 500], VV: [20, 100, 500], VLD: [20, 100, 500], FK: [20, 100, 500] };
 
 for (const file of fs.readdirSync('benchmarks/vue/components')) {
   if (/^Form[A-Z0-9]+\.vue$/.test(file)) fs.rmSync(`benchmarks/vue/components/${file}`);
@@ -51,6 +63,28 @@ ${comps.map((c) => `  import ${c} from './${c}.vue';`).join('\n')}
   const props = defineProps<{ schema: any }>();
   const { form, validate, error } = ${composable}(props.schema);
   void validate;${vfor ? '\n  const keys = Object.keys(props.schema.fields);' : ''}
+  onBeforeUpdate(() => { stats.formUpdates++; });
+</script>
+`;
+    fs.writeFileSync(`benchmarks/vue/components/Form${key}${n}.vue`, sfc);
+  }
+}
+for (const [key, [line, comps, imports, setup]] of Object.entries(LIBS)) {
+  for (const n of SIZES[key]) {
+    const sfc = `<!-- gerado por benchmarks/vue/generate.mjs: não editar à mão -->
+<template>
+  <form>
+${Array.from({ length: n }, (_, i) => line(i)).join('\n')}
+  </form>
+</template>
+
+<script setup lang="ts">
+  import { onBeforeUpdate } from 'vue';
+${comps.map((c) => `  import ${c} from './${c}.vue';`).join('\n')}
+${imports.map((x) => `  ${x}`).join('\n')}
+  import { stats } from '../stats';
+  const props = defineProps<{ schema: any }>();
+  ${setup.replace(/\\n/g, '\n')}
   onBeforeUpdate(() => { stats.formUpdates++; });
 </script>
 `;

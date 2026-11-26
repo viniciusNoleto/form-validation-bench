@@ -1,4 +1,7 @@
 import { it, expect } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideFormlyCore } from '@ngx-formly/core';
+import { BenchFormlyType } from './libs';
 import { LONG, TEXT, VARIANTS, mountMs, type } from './harness';
 import { RUN, shuffled, writeRun } from '../shared/runs.mjs';
 
@@ -9,24 +12,26 @@ const byKey = Object.fromEntries(VARIANTS.map((v) => [v.key, v]));
 
 /** Contagens das repetições precisam ser idênticas: o roteiro é determinístico. */
 function counts(xs: Run[]) {
-  for (const k of ['updates', 'formUpdates', 'validations', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
-  const { updates, formUpdates, validations, flickers } = xs[0];
-  return { updates, formUpdates, validations, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
+  for (const k of ['updates', 'formUpdates', 'validations', 'whole', 'flickers'] as const) expect(new Set(xs.map((x) => x[k])).size, k).toBe(1);
+  const { updates, formUpdates, validations, whole, flickers } = xs[0];
+  return { updates, formUpdates, validations, whole, flickers, samples_us: xs.map((x) => round(x.usPerKey)), samples_key_us: xs.map((x) => round(x.keyUsPerKey)) };
 }
 
 it('Angular: gravação do erro, debounce, montagem e escala', async () => {
+  // configuração do ngx-formly uma vez, no injetor do teste (e não uma por formulário)
+  TestBed.configureTestingModule({ providers: [provideFormlyCore({ types: [{ name: 'bench', component: BenchFormlyType }] })] });
   const variants: Record<string, any> = {};
 
   // Contagens com 25 teclas (seção 8.3).
   for (const v of VARIANTS) {
     const [slow, fast] = [await type(v, TEXT, 250), await type(v, TEXT, 60)];
-    const c = ({ updates, formUpdates, validations, flickers }: Run) => ({ updates, formUpdates, validations, flickers });
+    const c = ({ updates, formUpdates, validations, whole, flickers }: Run) => ({ updates, formUpdates, validations, whole, flickers });
     variants[v.key] = { name: v.name, counts25: { '250ms': c(slow), '60ms': c(fast) } };
   }
 
   // Escala: as células com 100 e 500 campos entram no MESMO sorteio das variantes (um bloco só);
   // a célula com 20 campos é a própria medição da variante (54 teclas, 250 ms).
-  const SCALE = ['H', 'W', 'O'];
+  const SCALE = ['H', 'W', 'O', 'RF', 'SF', 'FLY'].filter((k) => byKey[k]);
   const cells = SCALE.flatMap((key) => [100, 500].map((n) => ({ key, n })));
 
   // Aquecimento da digitação, da montagem e das células de escala.
